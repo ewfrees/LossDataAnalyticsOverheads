@@ -1,0 +1,584 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+  \usetheme{Madison}
+%    \usetheme[left,hideallsubsections,width=1cm]{UWThemeB}
+  \usefonttheme[onlymath]{serif}
+}
+
+% % % % to make navigation two lines
+\usepackage{ragged2e}
+
+\makeatletter
+\setbeamertemplate{section in head/foot}{%
+	\parbox[c][0.33cm][t]{\dimexpr(\textwidth-1.3cm)/\beamer@sectionmax\relax}{%
+		\RaggedRight\fontsize{4}{4}\selectfont\insertsectionhead}}
+\setbeamertemplate{footline}[frame number]
+\makeatother
+% % % %
+\usepackage{booktabs, calc, rotating}
+\usepackage{scalefnt}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+%\usepackage[T1]{fontenc}
+\usepackage{alltt}
+
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{blocks}[rounded][shadow=true]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  CHANGE THE TITLE AND INPUT FILE ACCORDING TO THE CHAPTER THAT YOU WISH TO COMPILE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[Portfolio Management]{Portfolio Management including Reinsurance}
+
+
+\date[Fall 2017]{Fall 2017}
+%Personal definitions - Bayes Regression
+\def\bsb{\boldsymbol \beta}
+\def\bsa{\boldsymbol \alpha}
+\def\bsm{\boldsymbol \mu}
+\def\bsS{\boldsymbol \Sigma}
+\def\bsx{\boldsymbol \xi}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Outline}
+    %\tableofcontents[part=1,pausesections]
+     \tableofcontents[part=1]
+\end{frame}
+
+\part<presentation>{Main Talk}
+
+
+\begin{frame}%[shrink=2]
+\frametitle{Overview: Portfolio Management including Reinsurance}
+Define $S$ to be (random) obligations that arise from a collection (portfolio) of insurance contracts
+\vspace{0.3cm}
+\begin{itemize}
+\item We are particularly interested in probabilities of large outcomes and so formalize the notion of a ``heavy-tail'' distribution
+\item How much in assets does an insurer need to retain to meet obligations arising from the random $S$? A study of ``risk measures'' helps to address this question
+\item As with policyholders, insurers also seek mechanisms in order to spread risks. A company that sells insurance to an insurance company is known as a ``reinsurer''
+\end{itemize}
+\end{frame}
+
+\section{Tails of Distributions}
+
+\begin{frame}{Tails of Distributions}
+\begin{itemize}
+\item The \textcolor{blue}{tail} of a distribution (more specifically: the \textcolor{blue}{right tail}) is the portion of the distribution corresponding to large values of the r.v.
+\vspace{0.3cm}
+\item Understanding large possible loss values is important because they have the greatest impact on the total of losses.
+\vspace{0.3cm}
+\item R.v.'s that tend to assign higher probabilities to larger values are said to be \textcolor{blue}{heavier tailed}.
+\vspace{0.3cm}
+\item When choosing models, tail weight can help narrow choices or can confirm a choice for a model.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Classification Based on Moments}
+\begin{itemize}
+\item One way of classifying distributions:
+\vspace{0.3cm}
+\item[] are all moments finite, or not?
+\vspace{0.3cm}
+\item The \textcolor{blue}{finiteness} of \textcolor{blue}{all positive moments} indicates a (relatively) light right tail.
+\vspace{0.3cm}
+\item The \textcolor{blue}{finiteness} of only positive moments \textcolor{blue}{up to a certain value} indicates a heavy right tail.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Classification Based on Moments}
+\begin{itemize}
+\item \textcolor{blue}{KPW Example 3.9}: demonstrate that for the gamma distribution all positive moments are finite but for the Pareto distribution they are not.
+\vspace{0.3cm}
+\item For the gamma distribution
+\begin{eqnarray*}
+\mu_k^{'} &=& \int_0^{\infty} x^k \frac{x^{\alpha-1} e^{-x/\theta}}{\Gamma(\alpha) \theta^{\alpha}} dx \\
+&=& \int_0^{\infty} (y\theta)^k  \frac{(y\theta)^{\alpha-1} e^{-y}}{\Gamma(\alpha) \theta^{\alpha}} \theta dy \\
+&=& \frac{\theta^k}{\Gamma(\alpha)} \Gamma(\alpha+k) < \infty \ \ \ \text{for\ all}\ k>0.
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Classification Based on Moments II}
+\begin{itemize}
+\item \textcolor{blue}{KPW Example 3.9}: demonstrate that for the gamma distribution all positive moments exist but for the Pareto distribution they do not.
+\item For the Pareto distribution
+\begin{eqnarray*}
+\mu_k^{'} &=& \int_0^{\infty} x^k \frac{\alpha \theta^{\alpha}}{(x+\theta)^{\alpha+1}} dx \\
+&=& \int_{\theta}^{\infty} (y-\theta)^k \frac{\alpha \theta^{\alpha}}{y^{\alpha+1}} dy \\
+&=& \alpha \cdot \theta^{\alpha} \int_{\theta}^{\infty} \sum_{j=0}^k \left(\begin{array}{c}
+                                                                             k \\
+                                                                             j
+                                                                           \end{array} \right) y^{j-\alpha-1} (-\theta)^{k-j} dy,
+\end{eqnarray*}
+for integer values of $k$.
+\vspace{0.3cm}
+\item[] This integral is finite only if $\int_{\theta}^{\infty} y^{j-\alpha-1} dy = \frac{y^{j-\alpha}}{j-\alpha}\big{|}_{\theta}^{\infty}$ is finite.
+\item[] Finiteness occurs when $j-\alpha < 0$ for $j=1, \ldots,k$. Or, equivalently, $k< \alpha$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Classification Based on Moments III}
+\begin{itemize}
+\item Pareto is said to have a heavy tail, and gamma has a light tail.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Comparison Based on Limiting Tail Behavior}
+\begin{itemize}
+\item Consider two distributions with the same mean.
+\vspace{0.3cm}
+\item If ratio of $S_1(.)$ and $S_2(.)$ diverges to infinity, then distribution 1 has a heavier tail than distribution 2.
+\vspace{0.3cm}
+\item Thus, we examine
+\begin{eqnarray*}
+\lim_{x\to \infty} \frac{S_1(x)}{S_2(x)} &=& \lim_{x \to \infty} \frac{S_1^{'}(x)}{S_2^{'}(x)} \\
+&=& \lim_{x \to \infty} \frac{-f_1(x)}{-f_2(x)} = \lim_{x\to \infty} \frac{f_1(x)}{f_2(x)}.
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Comparison Based on Limiting Tail Behavior II}
+\begin{itemize}
+\item \textcolor{blue}{KPW Example 3.10}: demonstrate that Pareto distribution has a heavier tail than the gamma distribution using the limit of the ratio of their density functions.
+\vspace{0.3cm}
+\item We consider
+\begin{eqnarray*}
+\lim_{x\to \infty} \frac{f_{\text{Pareto}}(x)}{f_{\text{gamma}}(x)} &=& \lim_{x \to \infty} \frac{\alpha \theta^{\alpha} (x+ \theta)^{-\alpha-1}}{x^{\tau-1} e^{-x/\lambda} \lambda^{-\tau} \Gamma(\tau)^{-1}} \\
+&=& c \lim_{x\to \infty} \frac{e^{x/\lambda}}{(x+\theta)^{\alpha+1} x^{\tau-1}} \\
+&=& \infty
+\end{eqnarray*}
+\item[] Exponentials go to infinity faster than polynomials, thus the limit is infinity.
+\end{itemize}
+\end{frame}
+
+\section{Measures of Risk}
+
+\begin{frame}{Measures of Risk}
+\begin{itemize}
+\item A \textcolor{blue}{risk measure} is a mapping from the r.v. representing the loss associated with the risks to the real line.
+\vspace{0.3cm}
+\item A risk measure gives a single number that is intended to quantify the risk.
+\vspace{0.3cm}
+\begin{itemize}\item For example, the standard deviation is a risk measure.\end{itemize}
+\vspace{0.3cm}
+\item Notation: $\rho(X)$.
+\vspace{0.4cm}
+\item We briefly mention:
+\vspace{0.3cm}
+\begin{itemize}
+\item[-] \textcolor{blue}{VaR}: Value at Risk;
+\item[-] \textcolor{blue}{TVaR}: Tail Value at Risk.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Value at Risk}
+\begin{itemize}
+\item Say $F_X(x)$ represents the cdf of outcomes over a fixed period of time, e.g.\ one year, of a portfolio of risks.
+\vspace{0.3cm}
+\item We consider positive values of $X$ as losses.
+\vspace{0.3cm}
+\item \textcolor{blue}{Definition 3.11}: let $X$ denote a loss r.v., then the \textcolor{blue}{Value-at-Risk} of $X$ at the $100p\%$ level, denoted $VaR_p(X)$ or $\pi_p$, is the $100p$ percentile (or quantile) of the distribution of $X$.
+\vspace{0.3cm}
+\item E.g. for continuous distributions we have
+\begin{eqnarray*}
+P(X> \pi_p) &=& 1-p.
+\end{eqnarray*}
+%\item VaR is not subadditive, see the next example.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Value at Risk II}
+\begin{itemize}
+\item VaR has become the standard risk measure used to evaluate exposure to risk.
+\vspace{0.3cm}
+\item \textcolor{blue}{VaR} is the \textcolor{blue}{amount of capital} required to ensure, with a \textcolor{blue}{high degree of certainty}, that the \textcolor{blue}{enterprise does not become technically insolvent}.
+\vspace{0.3cm}
+\item Which degree of certainty?
+\vspace{0.3cm}
+\begin{itemize}
+\item[-] 95$\%$?
+\vspace{0.3cm}
+\item[-] in Solvency II $99.5\%$ (or: ruin probability of 1 in 200).
+\end{itemize}
+\vspace{0.3cm}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Value at Risk III}
+\begin{itemize}
+\item \textcolor{blue}{VaR is not subadditive}.
+\begin{itemize}
+\item[] Subadditivity of a risk measure $\rho(.)$ requires
+\begin{eqnarray*}
+\rho(X+Y) \leq \rho(X)+\rho(Y).
+\end{eqnarray*}
+\item[] Intuition behind subadditivity: combining risks is less riskier than holding them separately.
+\end{itemize}
+\vspace{0.3cm}
+\item \textcolor{blue}{Example:} let $X$ and $Y$ be i.i.d. r.v.'s which are $\text{Bern}(0.02)$ distributed.
+\begin{itemize}
+\item Then, $P(X\leq 0) = 0.98$ and $P(Y\leq 0)=0.98$. Thus, $F_X^{-1}(0.975)=F_Y^{-1}(0.975)=0$.
+\vspace{0.3cm}
+\item For the sum, $X+Y$, we have $P[X+Y=0]=0.98 \cdot 0.98=0.9604$. Thus, $F_{X+Y}^{-1}(0.975)>0$.
+\vspace{0.3cm}
+\item VaR is not subadditive, since $\text{VaR}(X+Y)$ in this case is larger than $\text{VaR}(X)+\text{VaR}(Y)$.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Value at Risk IV}
+\begin{itemize}
+\item Another \textcolor{blue}{drawback of VaR}:
+\vspace{0.3cm}
+\begin{itemize}
+\item[-] it is a single quantile risk measure of a predetermined level $p$;
+\vspace{0.3cm}
+\item[-] no information about the thickness of the upper tail of the distribution
+function from $\text{VaR}_p$ on;
+\vspace{0.3cm}
+\item[-] whereas stakeholders are interested in both frequency and severity of default.
+\end{itemize}
+\vspace{0.3cm}
+\item Therefore: study other risk measures, e.g. \textcolor{blue}{Tail Value at Risk} (TVaR).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item \textcolor{blue}{Definition 3.12:} let $X$ denote a loss r.v., then the Tail Value at Risk of $X$ at the $100p\%$ security level, $\text{TVaR}(p)$, is the \textcolor{blue}{expected loss} \textcolor{green}{given that the loss exceeds the $100p$ percentile} (or: quantile) of the distribution of $X$.
+\vspace{0.3cm}
+\item We have (assume continuous distribution)
+\begin{eqnarray*}
+\text{TVaR}_p(X) &=& \textcolor{blue}{E}(X\textcolor{green}{|X>\pi_p}) \\
+&=& \frac{\int_{\pi_p}^{\infty} x\cdot \textcolor{green}{f(x)} dx}{\textcolor{green}{1-F(\pi_p)}}.
+\end{eqnarray*}
+\item We can rewrite this as \quad \textcolor{blue}{[the usual definition of TVaR]}
+\begin{eqnarray*}
+\text{TVaR}_p(X) &=& \frac{\int_{\pi_p}^{\infty} x dF_X(x)}{1-p} \\
+&=& \frac{\int_p^1 \text{VaR}_u(X) du}{1-p},
+\end{eqnarray*}
+using the substitution $F_X(x) = u$ and thus $x=F_X^{-1}(u)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item From the definition
+\begin{eqnarray*}
+\text{TVaR}_p(X) &=& \frac{\int_p^1 \text{VaR}_u(X) du}{1-p},
+\end{eqnarray*}
+we understand
+\vspace{0.3cm}
+\begin{itemize}
+\item[-] TVaR is the \textcolor{blue}{arithmetic average} of the quantiles of $X$, from level $p$ on;
+\vspace{0.3cm}
+\item[-] TVaR is `averaging high level VaRs';
+\vspace{0.3cm}
+\item[-] TVaR \textcolor{blue}{tells us much more about the tail} of the distribution than does VaR alone.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item Finally, TVaR can also be written as
+\begin{eqnarray*}
+\text{TVaR}_p(X) &=& E(X|X>\pi_p) \\
+&=& \frac{\int_{\pi_p}^{\infty} x f(x)dx}{1-p} \\
+&=& \textcolor{blue}{\pi_p} + \frac{\int_{\pi_p}^{\infty} (x-\textcolor{blue}{\pi_p}) f(x) dx}{1-p} \\
+&=& \text{VaR}_p(X) + e(\pi_p),
+\end{eqnarray*}
+with $e(\pi_p)$ the mean excess loss function evaluated at the $100p$th percentile.
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item We can understand these connections as follows. (Assume continuous r.v.'s)
+\vspace{0.3cm}
+\item The relation
+\begin{eqnarray*}
+\text{CTE}_p(X) &=& \text{TVaR}_{F_X(\pi_p)}(X),
+\end{eqnarray*}
+then follows immediately by combining the other two expressions.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item TVaR is a coherent risk measure, see e.g. \href{http://onderwijsaanbod.kuleuven.be/syllabi/e/D0R57BE.htm\#activetab=doelstellingen_idp1406608}{Foundations of Risk Measurement} course.
+\vspace{0.3cm}
+\item Thus, $\text{TVaR}(X+Y) \leq \text{TVaR}(X)+\text{TVaR}(Y)$.
+\vspace{0.3cm}
+\item When using this risk measure, we never encounter a situation where combining risks is viewed as being riskier than keeping them separate.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item \textcolor{blue}{KPW Example 3.18} \textit{(Tail comparisons)} Consider three loss distributions for an insurance company. Losses
+for the next year are estimated to be on average 100 million with standard deviation 223.607
+million. You are interested in finding high quantiles of the distribution of losses. Using
+the normal, Pareto, and Weibull distributions, obtain the VaR at the 90\%, 99\%, and
+99.99\% security levels.
+\vspace{0.3cm}
+\item \textcolor{blue}{Solution}
+\vspace{0.3cm}
+\item[] Normal distribution has a lighter tail than the others, and thus smaller quantiles.
+\vspace{0.3cm}
+\item[] Pareto and Weibull with $\tau<1$ have heavy tails, and thus relatively larger extreme quantiles.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Tail Value at Risk}
+\begin{itemize}
+\item \textcolor{blue}{Example 3.18} \textit{(Tail comparisons)} Consider three loss distributions for an insurance company. Losses
+for the next year are estimated to be on average 100 million with standard deviation 223.607
+million. You are interested in finding high quantiles of the distribution of losses. Using
+the normal, Pareto, and Weibull distributions, obtain the VaR at the 99\%, 99.9\%, and
+99.99\% security levels.
+\vspace{0.3cm}
+\begin{verbatim}
+> qnorm(c(0.9,0.99,0.999),mu,sigma)
+[1] 386.5639 620.1877 790.9976
+> qpareto(c(0.9,0.99,0.999),alpha,s)
+[1]  226.7830  796.4362 2227.3411
+> qweibull(c(0.9,0.99,0.999),tau,theta)
+[1]  265.0949 1060.3796 2385.8541
+\end{verbatim}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item We learn from Example 3.18 that results vary widely depending on the choice of distribution.
+\vspace{0.3cm}
+\item Thus, the selection of an \textcolor{blue}{appropriate loss model} is highly important.
+\vspace{0.3cm}
+\item To obtain numerical values of VaR or TVaR:
+\vspace{0.3cm}
+\begin{itemize}
+\item[-] estimate from the data directly;
+\vspace{0.3cm}
+\item[-] or use distributional formulas, and plug in parameter estimates.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item When estimating VaR directly from the data:
+\vspace{0.3cm}
+\begin{itemize}
+\item[-] use R to get quantile from the empirical distribution;
+\vspace{0.3cm}
+\item[-] R has 9 ways to estimate a VaR at level $p$ from a sample of size $n$, differing in the way the interpolation between order statistics close to $np$ .
+\end{itemize}
+\vspace{0.3cm}
+\item When estimating TVaR directly from the data:
+\vspace{0.3cm}
+\begin{itemize}
+\item[-] take average of all observations that exceed the threshold (i.e.\ $\pi_p$);
+\end{itemize}
+\vspace{0.3cm}
+\item \textcolor{blue}{Caution:} we need a large number of observations (and a large number of observations $> \pi_p$) in order to get reliable estimates.
+\vspace{0.3cm}
+\item When not may observations in excess of the threshold are available:
+\vspace{0.3cm}
+\begin{itemize}
+\item[-] construct a loss model;
+\vspace{0.3cm}
+\item[-] calculate values of VaR and TVaR directly from the fitted distribution.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tail Value at Risk}
+\begin{itemize}
+\item For example
+\begin{eqnarray*}
+&&\text{TVaR}_p(X) = E(X|X>\pi_p) \\
+&=& \pi_p + \frac{\textcolor{blue}{\int_{\pi_p}^{\infty}} (x-\pi_p) f(x) dx}{1-p} \\
+&=& \pi_p + \frac{\textcolor{blue}{\int_{-\infty}^{\infty}} (x-\pi_p) f(x) dx \textcolor{blue}{-\int_{-\infty}^{\pi_p}} (x-\pi_p) f(x) dx }{1-p} \\
+&=& \pi_p + \frac{E(X)-\int_{-\infty}^{\pi_p} xf(x) dx -\pi_p (1-F(\pi_p))}{1-p} \\
+&=& \pi_p + \frac{E(X) - E[\min{(X,\pi_p)}]}{1-p} = \pi_p + \frac{E(X)-E(X \wedge \pi_p)}{1-p},
+\end{eqnarray*}
+see Appendix A for those expressions.
+\end{itemize}
+\end{frame}
+
+\section{Reinsurance}
+
+\begin{frame}%[shrink=2]
+\frametitle{Reinsurance}
+\begin{itemize}
+\item A major difference between reinsurance and primary insurance is that a reinsurance program is generally tailored more closely to the buyer
+\item There are two major types of reinsurance
+\begin{itemize}
+\item Proportional
+\item Excess of Loss
+\end{itemize}
+ \item A proportional treaty is an agreement between a reinsurer and a ceding company (the reinsured) in which the reinsurer assumes a given percent of losses and premium.
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Proportional Reinsurance}
+\begin{itemize}
+ \item A proportional treaty is an agreement between a reinsurer and a ceding company (the reinsured) in which the reinsurer assumes a given percent of losses and premium.
+\item The simplest example of a proportional treaty is called \textit{Quota Share}.
+\begin{itemize}
+ \item In a quota share treaty, the reinsurer receives a flat percent, say 50\%, of the premium for the book of business reinsured.
+ \item In exchange, the reinsurer pays 50\% of losses, including allocated loss adjustment expenses
+ \item The reinsurer also pays the ceding company a ceding commission which is designed to reflect the differences in underwriting expenses incurred.
+\end{itemize}
+\item The amounts paid by the direct insurer and the reinsurer are defined as follows:
+\end{itemize}
+$$ Y_{insurer} = c X \ \ \ \ \ Y_{reinsurer} = (1-c) X$$
+Note that $Y_{insurer}+Y_{reinsurer}=X$.
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Surplus Share Proportional Treaty}
+\begin{itemize}
+\item Another proportional treaty is known as \textit{Surplus Share}; these are common in property business.
+\item A surplus share treaty allows the reinsured to limit its exposure on any one risk to a given amount (the \textit{retained line}).
+\item The reinsurer assumes a part of the risk in proportion to the amount that the insured value exceeds the retained line, up to a given limit (expressed as a multiple of the retained line, or ``number'' of lines).
+\item For example, let the retained Line be \$100,000 and let the given limit be 4 lines (\$400,000). Then, if $X$ is the loss, the reinsurer's portion is
+$\min(400000, (X-100000)_+)$.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}%[shrink=2]
+\frametitle{Excess of Loss Reinsurance}
+\begin{itemize}
+\item Under this arrangement, the direct insurer sets a retention level $M (>0)$ and pays in full any claim for which $X  \le M$.
+\item The direct insurer retains an amount $M$ of the risk.
+\item For claims for which $X > M$, the direct insurer pays $M$ and the reinsurer pays the remaining amount $X-M$.
+\item The amounts paid by the direct insurer and the reinsurer are defined as follows:
+\end{itemize}
+$$
+Y_{insurer} =
+\begin{cases}
+X & X \le M\\
+M & X >M \\
+\end{cases} \ \ \ \ = \min(X,M) = X \wedge M
+$$
+
+$$
+Y_{reinsurer} =
+\begin{cases}
+0 & X \le M\\
+X- M & X >M \\
+\end{cases} \ \ \ \  = \max(0,X-M)
+$$
+Note that $Y_{insurer}+Y_{reinsurer}=X$.
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Relations with Personal Insurance}
+\begin{itemize}
+\item We have already seen the needed tools to handle reinsurance in the context of personal insurance
+\begin{itemize}
+\item For a proportional reinsurance, the transformation  $Y_{insurer} = c X $ is the same as a ``coinsurance'' adjustment in personal insurance
+\item For excess of loss reinsurance, the transformation $Y_{reinsurer} = \max(0,X-M)$ is the same as an insurer's payment with a deductible $M$ and $Y_{insurer} = \min(X,M) = X \wedge M$ is equivalent to what a policyholder pays with deductible $M$.
+\end{itemize}
+\item Reinsurance applications suggest introducing \textit{layers of coverage}, a (small) mathematical extension.
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Layers of Coverage}
+\begin{itemize}
+\item Instead of simply an insurer and reinsurer or an insurer and a policyholder, think about the situation with all three parties, a policyholder, insurer, and reinsurer, who agree on how to share a risk.
+\item In general, we consider $k$ parties. If $k=4$, it could be an insurer and three different reinsurers.
+\item Consider a simple example:
+\begin{itemize}
+\item Suppose that there are $k=3$ parties. The first party is responsible for the first 100 of claims, the second responsible for claims from 100 to 3000, and the third responsible for claims above 3000.
+\item If there are four claims in the amounts 50, 600, 1800 and 4000, they would be allocated to the parties as follows:
+\end{itemize}
+\end{itemize}
+\begin{table}[H]\scalefont{0.8}
+ \centering
+    \begin{tabular}{l|cccc|l}
+    \hline
+ Layer          & Claim 1&  Claim 2 &  Claim 3 &  Claim 4 & Total \\ \hline
+(0, 100]        & 50     &      100 &      100 &      100 &  350 \\
+(100, 3000]     & 0      &      500 &     1700 &     2900 & 5100 \\
+(3000, $\infty$)& 0      &      0   &        0 &     1000 & 1000 \\ \hline
+Total & 50 & 600 & 1800 & 4000 & 6450 \\ \hline
+    \end{tabular}
+ \end{table}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Layers of Coverage II}
+\begin{itemize}\scalefont{0.9}
+\item Mathematically, partition the positive real line into $k$ intervals using the cut-points $0 = c_0 < c_1 < \cdots < c_{k-1} < c_k = \infty$.
+\begin{itemize}\item The $j$th interval is $(c_{j-1}, c_j]$.\end{itemize}
+\item Let $Y_j$ be the amount of risk shared by the $j$th party
+\item To illustrate, if a loss $x$ is such that $c_{j-1} <x \le c_j$, then
+$$
+\left(\begin{array}{c}
+Y_1\\ Y_2 \\ \vdots \\ Y_j \\Y_{j+1} \\ \vdots \\Y_k
+\end{array}\right)
+=\left(\begin{array}{c}
+c_1-c_0 \\ c_2-c_1  \\ \vdots \\ x-c_{j-1}  \\ 0 \\ \vdots \\0
+\end{array}\right)
+$$
+\item More succinctly, we can write
+$$Y_j = \min(X,c_j) - \min(X,c_{j-1}) $$
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Layers of Coverage III}
+\begin{itemize}
+\item With the expression $Y_j = \min(X,c_j) - \min(X,c_{j-1}) $, we see that the $j$th party is responsible for claims in the interval $(c_{j-1}, c_j]$
+\item Note that $X = Y_1 + Y_2 + \cdots + Y_k$
+\item The parties need not be different.
+\begin{itemize}
+\item For example, suppose that a policyholder is responsible for the first 500 of claims and all claims in excess of 100,000. The insurer takes claims between 100 and 100,000.
+\item Then, we would use $c_1 = 100$, $c_2 =100000$.
+\item The policyholder is responsible for $Y_1 =\min(X,100)$ and $Y_3 = X - \min(X,100000) = \max(0, X-100000)$.
+\end{itemize}
+\item See the Wisconsin Property Fund site for more info on layers of reinsurance,
+\url{https://sites.google.com/a/wisc.edu/local-government-property-insurance-fund/home/reinsurance}
+\end{itemize}
+\end{frame}
+
+\end{document}
+
+
+
+
+
+\begin{frame}[shrink=2]
+\frametitle{xxx}
+\begin{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+
+\end{document}
+
+\textcolor{blue}{temp}
+

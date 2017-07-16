@@ -1,0 +1,43 @@
+\ProvidesPackageRCS $Header: beamerthemeMadison.sty,v 0.3 2006/8/10
+18:05:16 tantau Exp $
+
+% Created by Jiafeng Sun <jiafengs@yahoo.com> based on the AnnArbor theme
+% by Madhusudan Singh <madhusudan.singh@gmail.com>
+
+\mode<presentation>
+
+\useinnertheme[shadow=true]{rounded}
+\useoutertheme{infolines}
+%\usecolortheme{wolverine}
+%\usecolortheme{hawkeye}
+%%%%%%%%%%%% This block defines the color theme red-green-blue tuple%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\definecolor{darkblue}{rgb}{0,0,0.8}
+\definecolor{darkblue}{rgb}{0,0,0}
+\definecolor{darkred}{rgb}{0.7,0,0}
+
+\setbeamercolor{alerted text}{fg=darkred}
+\setbeamercolor*{palette primary}{fg=white,bg=darkred}% used for the upperright header and lowerright footer
+\setbeamercolor*{palette secondary}{fg=white,bg=darkred} %used for center footer
+\setbeamercolor*{palette tertiary}{bg=darkblue!80!black, fg=white}%yellow!50!orange} % used for the upperleft header and lowerleft footer
+\setbeamercolor*{palette quaternary}{fg=white,bg=yellow!20!orange}
+
+\setbeamercolor*{sidebar}{fg=darkblue,bg=orange!75!white}
+
+\setbeamercolor*{palette sidebar primary}{fg=darkblue!10!black}
+\setbeamercolor*{palette sidebar secondary}{fg=white}
+\setbeamercolor*{palette sidebar tertiary}{fg=darkblue!50!black}
+\setbeamercolor*{palette sidebar quaternary}{fg=yellow!10!orange}
+
+\setbeamercolor*{titlelike}{parent=palette primary}
+\setbeamercolor{frametitle}{fg=white, bg=darkred}
+\setbeamercolor{frametitle right}{bg=darkred}
+
+\setbeamercolor*{separation line}{}
+\setbeamercolor*{fine separation line}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setbeamerfont{block title}{size={}}
+\setbeamercolor{titlelike}{parent=structure, fg=white, bg=darkred}%used for main title%
+\mode
+<all>

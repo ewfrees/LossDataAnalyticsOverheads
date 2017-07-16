@@ -1,0 +1,184 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+  \usetheme{Madison}
+%    \usetheme[left,hideallsubsections,width=1cm]{UWThemeB}
+  \usefonttheme[onlymath]{serif}
+}
+
+\usepackage{booktabs, calc, rotating}
+\usepackage{scalefnt}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+%\usepackage[T1]{fontenc}
+\usepackage{alltt}
+
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{blocks}[rounded][shadow=true]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  CHANGE THE TITLE AND INPUT FILE ACCORDING TO THE CHAPTER THAT YOU WISH TO COMPILE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[Tech Supplement]{Frequency Distributions \\
+Technical Supplement: Iterated Expectations}
+
+\date[Fall 2017]{Fall 2017}
+
+%Personal definitions
+\def\bsb{\boldsymbol \beta}
+\def\bsa{\boldsymbol \alpha}
+\def\bsm{\boldsymbol \mu}
+\def\bsS{\boldsymbol \Sigma}
+\def\bsx{\boldsymbol \xi}
+
+\begin{document}
+
+\frame{\titlepage}
+
+%\begin{frame}
+%  \frametitle{Outline}
+%    %\tableofcontents[part=1,pausesections]
+%     \tableofcontents[part=1]
+%\end{frame}
+
+\part<presentation>{Main Talk}
+
+
+
+\section{Technical Supplement: Iterated Expectations}
+
+\begin{frame}[shrink=2]
+ \frametitle{Iterated Expectations}\scalefont{0.8}
+ In some situations, we only observe a single outcome but can conceptualize an outcome as resulting from a two (or more) stage process. These are called \textbf{two-stage}, or ``\textbf{hierarchical},'' type situations. Some special cases include:
+\begin{itemize}
+\item problems where the parameters of the distribution are random variables,
+\item mixture problems, where stage 1 represents the type of subpopulation and stage 2 represents a random variable with a distribution that depends on population type
+\item an aggregate distribution, where stage 1 represents the number of events and stage two represents the amount per event.
+\end{itemize}
+In these situations, the law of iterated expectations can be useful. The law of total variation is a special case that is particularly helpful for variance calculations.
+
+To apply these rules,
+\begin{enumerate}
+   \item Identify the random variable that is being conditioned upon, typically a stage 1 outcome (that is not observed).
+\item Conditional on the stage 1 outcome, calculate summary measures such as a mean, variance, and the like.
+\item There are several results of the step (ii), one for each stage 1 outcome. Then, combine these results using the iterated expectations or total variation rules.
+\end{enumerate}  \scalefont{1.25}
+\end{frame}
+
+
+
+\begin{frame}
+ \frametitle{Iterated Expectations}
+\begin{itemize}
+   \item Consider two random variables, $X$ and $Y$, and a function $h(X,Y)$. Assuming expectations exists and are finite, a rule/theorem from probability states that
+$$\mathrm{E~} h(X,Y)= \mathrm{E~} \left\{ \mathrm{E~} \left( h(X,Y) | X \right) \right \} .$$
+\item This result is known as the \textit{law of iterated expectations}.
+\item Here, the random variables may be discrete, continuous, or a hybrid combination of the two.
+\item Similarly, the \textit{law of total variation} is
+$$\mathrm{Var~} h(X,Y)= \mathrm{E~} \left\{ \mathrm{Var~} \left( h(X,Y) | X \right) \right \}
++\mathrm{Var~} \left\{ \mathrm{E~} \left( h(X,Y) | X \right) \right \}, $$
+the expectation of the conditional variance plus the variance of the conditional expectation.
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=2]
+ \frametitle{Discrete Iterated Expectations}
+\begin{itemize}\scalefont{0.8}
+   \item To illustrate, suppose that $X$ and $Y$ are both discrete random variables with joint probability
+$$ p(x,y) = \Pr(X=x, Y=y).$$
+\item Further, let $p(y|x) = \frac{p(x,y)}{\Pr(X=x)}$ be the conditional probability mass function.
+\item The conditional expectation is
+$$  \mathrm{E~} \left( h(X,Y) | X=x \right) = \sum_y h(x,y) p(y|x)$$
+\item You can use the conditional expectation to get the unconditional expectation using
+\begin{eqnarray*} \mathrm{E~} \left\{ \mathrm{E~} \left( h(X,Y) | X \right) \right \}
+&=& \sum_x  \left\{\sum_y h(x,y) p(y|x) \right \} \Pr(X=x) \\
+&=& \sum_x  \sum_y h(x,y) p(y|x)  \Pr(X=x) \\
+&=&  \sum_x  \sum_y h(x,y) p(x,y)
+=  \mathrm{E~} h(X,Y)
+\end{eqnarray*}
+\item The proofs of the law of iterated expectations for the continuous and hybrid cases are similar.\scalefont{1.25}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+ \frametitle{Law of Total Variation}
+\begin{itemize}\scalefont{0.8}
+   \item To see this rule, first note that we can calculate a conditional variance as
+$$\mathrm{Var~} \left( h(X,Y) | X \right)  =
+\mathrm{E~} \left( h(X,Y)^2 | X \right) -\left\{\mathrm{E~} \left( h(X,Y) | X \right) \right\}^2.$$
+\item From this, the expectation of the conditional variance is
+\begin{eqnarray}\label{E:E1} \mathrm{E~} \mathrm{Var~} \left( h(X,Y) | X \right)  =
+\mathrm{E~} \left( h(X,Y)^2\right) - \mathrm{E~}\left\{\mathrm{E~} \left( h(X,Y) | X \right) \right\}^2.\end{eqnarray}
+\item Further, note that the conditional expectation, $\mathrm{E~} \left( h(X,Y) | X=x \right)$, is a function of $x$, say, $g(x)$.
+\item Now, $g(X)$ is a random variable with mean $\mathrm{E~} h(X,Y)$ and variance
+\begin{eqnarray}\label{E:E2}
+\mathrm{Var~} \left\{ \mathrm{E~} \left( h(X,Y) | X \right) \right \} &=&\mathrm{Var~} g(X)  \nonumber \\
+&=& \mathrm{E~} g(X)^2\ - \left(\mathrm{E~} h(X,Y)\right)^2 \nonumber\\
+&=& \mathrm{E~} \left\{\mathrm{E~} \left( h(X,Y) | X \right) \right\}^2
+- \left(\mathrm{E~} h(X,Y)\right)^2
+\end{eqnarray}
+\item Adding the variance of the conditional expectation in equation \eqref{E:E2} to the expectation of conditional variance in equation \eqref{E:E1} gives the law of total variation.
+   \scalefont{1.25}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Mixtures of Finite Populations: Example}
+\begin{itemize}
+\item For example, suppose that $N_1$ represents claims form ``good'' drivers and $N_2$ represents claims from ``bad'' drivers. We draw
+\begin{equation*}
+N =
+\begin{cases}
+N_1  &  \text{with prob~}\alpha\\
+N_2  &   \text{with prob~}(1-\alpha) .\\
+\end{cases}
+\end{equation*}
+\item Here, $\alpha$ represents the probability of drawing a ``good'' driver.
+\item Let $T$ be the type, so $T=1$ with prob $\alpha$ and $T=2$ with prob $1-\alpha$.
+\item From the law of iterated expectations, we have
+\begin{eqnarray*}\mathrm{E~} N &=& \mathrm{E~} \left\{ \mathrm{E~} \left( N | T \right) \right \} \\
+ &=& \mathrm{E~} N_1 \times \alpha +  \mathrm{E~} N_2 \times (1-\alpha).
+\end{eqnarray*}
+\item From the law of total variation
+$$\mathrm{Var~} N= \mathrm{E~} \left\{ \mathrm{Var~} \left( N | T \right) \right \}
++\mathrm{Var~} \left\{ \mathrm{E~} \left( N | T \right) \right \}, $$
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+ \frametitle{Mixtures of Finite Populations: Example 2}
+\begin{itemize}
+   \item To be more concrete, suppose that $N_j$ is Poisson with parameter $\lambda_j$. Then
+\begin{equation*}
+\mathrm{Var~} N_j|T= \mathrm{E~} N_j|T =
+\begin{cases}
+\lambda_1  &  T=1\\
+\lambda_2  &  T=2\\
+\end{cases}
+\end{equation*}
+\item Thus
+$$\mathrm{E~} \left\{ \mathrm{Var~} \left( N | T \right) \right \} = \alpha \lambda_1+ (1-\alpha) \lambda_2$$
+and
+$$\mathrm{Var~} \left\{ \mathrm{E~} \left( N | T \right) \right \} = (\lambda_1-\lambda_2)^2 \alpha (1-\alpha)$$
+(Recall: for a Bernoulli with outcomes $a$ and $b$ and prob $\alpha$, the variance is $(b-a)^2\alpha(1-\alpha)$).
+\item Thus,
+$$\mathrm{Var~} N= \alpha \lambda_1+ (1-\alpha) \lambda_2 + (\lambda_1-\lambda_2)^2 \alpha (1-\alpha)$$
+ \end{itemize}
+\end{frame}
+
+ \end{document}
+
+
+\begin{frame}[shrink=2]
+\frametitle{Instructor Notes}
+\begin{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+
+\textcolor{blue}{temp}
+

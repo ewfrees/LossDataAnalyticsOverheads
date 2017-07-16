@@ -1,0 +1,766 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+  \usetheme{Madison}
+%    \usetheme[left,hideallsubsections,width=1cm]{UWThemeB}
+  \usefonttheme[onlymath]{serif}
+}
+
+\usepackage{booktabs, calc, rotating}
+\usepackage{scalefnt}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+%\usepackage[T1]{fontenc}
+\usepackage{alltt}
+
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{blocks}[rounded][shadow=true]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  CHANGE THE TITLE AND INPUT FILE ACCORDING TO THE CHAPTER THAT YOU WISH TO COMPILE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[Frequency]{Frequency Distributions}
+
+\date[Fall 2017]{Fall 2017}
+
+
+%Personal definitions - Bayes Regression
+\def\bsb{\boldsymbol \beta}
+\def\bsa{\boldsymbol \alpha}
+\def\bsm{\boldsymbol \mu}
+\def\bsS{\boldsymbol \Sigma}
+\def\bsx{\boldsymbol \xi}
+
+
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Outline}
+    %\tableofcontents[part=1,pausesections]
+     \tableofcontents[part=1]
+\end{frame}
+
+\part<presentation>{Main Talk}
+
+
+\section{How Frequency Augments Severity Information}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Basic Terminology}
+\begin{itemize}
+   \item \textcolor{blue}{Claim} - indemnification upon the occurrence of an insured
+   event \vspace{2mm}
+   \begin{itemize}
+   \item \textcolor{blue}{Loss} - some authors use claim and loss interchangeably, others think of loss as the amount suffered by the insured whereas claim is the amount paid by the
+   insurer \vspace{2mm}
+ \end{itemize}
+    \item \textcolor{blue}{Frequency} - how often an insured event occurs, typically within a policy
+    contract \vspace{2mm}
+    \item \textcolor{blue}{Count} - In this chapter, we focus on count random variables that represent the number of claims, that is, how frequently an event
+    occurs \vspace{2mm}
+   \item \textcolor{blue}{Severity} - Amount, or size, of each payment for an insured event
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{The Importance of Frequency}
+\begin{itemize}
+   \item Insurers pay claims in monetary units, e.g., US dollars. So, why should they care about how frequently claims occur? \pause
+   \item Setting the price of an insurance good can be problematic:
+  \begin{itemize}
+\item In manufacturing, the cost of a good is (relatively) known
+\item In other areas of financial services, market prices are available
+\item Price of an insurance good?: start with an expected cost, add ``margins'' to account for riskiness, expenses, and a profit/surplus allowance
+\end{itemize}
+\item We can think of the expected cost as the expected number of claims times the expected amount per claims; that is, expected \textit{frequency times severity}
+  \item Claim amounts, or severities, will turn out to be relatively homogeneous for many lines of business and so we begin our investigations with frequency modeling
+   \end{itemize}
+    %\end{itemize}
+\end{frame}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Other Ways that Frequency Augments Severity Information I}
+\begin{itemize}
+     \item \textbf{Contractual} - For example, deductibles and policy limits are often in terms of each occurrence of an insured
+     event \vspace{2mm}
+
+     \item \textbf{Behaviorial} - Explanatory (rating) variables can have different effects on models of how often an event occurs in contrast to the size of the event
+\begin{itemize}
+     \item In healthcare, the decision to utilize healthcare by individuals is related primarily to personal characteristics whereas the cost per user may be more related to characteristics of the healthcare provider (such as the physician)
+           \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Other Ways that Frequency Augments Severity Information II}
+\begin{itemize}
+     \item \textbf{Databases}
+   \begin{itemize}
+   \item Many insurers keep separate data files that suggest developing separate frequency and severity
+   models \vspace{2mm}
+   \item This recording process makes it natural for insurers to model the frequency and severity as separate
+   processes \vspace{4mm}
+ \end{itemize}
+   \item \textbf{Regulatory and Administrative}
+   \begin{itemize}
+     \item Regulators routinely require the reporting of claims numbers as well as
+     amounts \vspace{2mm}
+     \item This may be due to the fact that there can be alternative definitions of an ``amount,'' e.g., paid versus incurred, and there is less potential error when reporting claim numbers
+  \end{itemize}  \end{itemize}
+\end{frame}
+
+\section{Basic Frequency Distributions}
+
+\begin{frame}%[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Foundations}
+\begin{itemize}\scalefont{0.8}
+\item We focus on claim counts $ N$ with support on the non-negative integers $k=0,1,2,
+\ldots$ %\vspace{2mm}
+ \item The \textcolor{blue}{probability mass function} is denoted as $\Pr(N = k) =
+ p_k$ \vspace{2mm}
+ \item We can summarize the distribution through its
+ \textcolor{blue}{moments}:
+\begin{itemize}\scalefont{0.8}
+\item The \textcolor{blue}{mean}, or first moment, is
+$$ \mathrm{E~} N = \mu = \sum^{\infty}_{k=0} k ~ p_k $$
+% \end{itemize}
+\item More generally, the $r$th moment is
+$$ \mathrm{E~} N^r = \mu^{\prime}_r = \sum^{\infty}_{k=0} k^r p_k $$
+\item It is common to use the \textcolor{blue}{variance}, which is the second moment about the mean,
+$$\mathrm{Var~} N = \mathrm{E~} (N-\mu)^2 = \mathrm{E~} N^2 -
+\mu^2$$ %\vspace{2mm}
+ \end{itemize}
+\item Also recall the \textcolor{blue}{moment generating function} (mgf):
+$$M(t) = \mathrm{E~}e^{tN} = \sum^{\infty}_{k=0} e^{tk} p_k $$
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Probability Generating Function}
+\begin{itemize}\scalefont{0.9}
+ \item The \textcolor{blue}{probability generating function} (pgf) is:
+\begin{eqnarray*}
+\mathrm{P}(z) &=& \mathrm{E~}z^N = \mathrm{E~}\exp{(N \ln z)} = M(\ln{z})\\
+&=& \sum^{\infty}_{k=0} z^k p_k \vspace{2mm}
+\end{eqnarray*}
+\item By taking the $m$th derivative, we see that the pgf ``generates'' the
+probabilities:
+\begin{eqnarray*}
+\left. P^{(m)}(z)\right|_{z=0} &=& \frac{\partial^m }{\partial z^m} P(z)|_{z=0} = p_m m!
+\end{eqnarray*}
+ \vspace{2mm}
+\item Further, the pgf can be used to generate moments:
+\begin{eqnarray*}
+P^{(1)}(1) &=& \sum^{\infty}_{k=0} k p_k = \mathrm{E~}N
+\end{eqnarray*}
+and
+\begin{equation*}
+P^{(2)}(1) = \mathrm{E~}[N(N-1)]
+\end{equation*}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Important Frequency Distributions}
+\begin{itemize}
+   \item The three important (in insurance) frequency distributions
+   are: \vspace{2mm}
+\begin{itemize}
+\item Poisson \vspace{2mm}
+\item Negative binomial \vspace{2mm}
+\item Binomial \vspace{4mm}
+ \end{itemize}
+ \item They are important because: \vspace{2mm}
+ \begin{itemize}
+\item They fit well many insurance data sets of interest \vspace{2mm}
+\item They provide the basis for more complex distributions that even better approximate real situations of interest to us
+ \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Poisson Distribution}
+\begin{itemize}
+   \item This distribution has parameter $\lambda$, probability mass function
+\begin{equation*}
+p_k = \frac{e^{-\lambda}\lambda^k}{k!}
+\end{equation*}
+and pgf
+\begin{eqnarray*}
+P(z) &=& M_N (\ln z) = \exp(\lambda(z-1)) \vspace{2mm}
+\end{eqnarray*}
+\item The expectation is $\mathrm{E~}N = \lambda $, which is the same as the variance, $\mathrm{Var~}N = \lambda$
+ \end{itemize}
+\end{frame}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Negative Binomial Distribution}
+\begin{itemize}
+   \item This distribution has parameters $(r, \beta)$, probability mass function
+\begin{equation*}
+p_k = {k+r-1\choose k} (\frac{1}{1+\beta})^r
+(\frac{\beta}{1+\beta})^k
+\end{equation*}
+and pgf
+\begin{eqnarray*}
+P(z) &=& (1-\beta(z-1))^{-r}\
+\end{eqnarray*} \vspace{2mm}
+\item The expectation is $\mathrm{E~}N = r\beta  $ and the variance is $\mathrm{Var~}N =
+r\beta(1+\beta)$ \vspace{2mm}
+
+\item If $r$ = 1, this distribution is called the \textcolor{blue}{geometric
+distribution} \vspace{2mm}
+\item As $\beta>0$, we have $\mathrm{Var~}N >\mathrm{E~}N$. This distribution is said to be \textcolor{blue}{overdispersed} (relative to the Poisson)
+ \end{itemize}
+\end{frame}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Binomial Distribution}
+\begin{itemize}
+   \item This distribution has parameters $(m,q)$, probability mass function
+\begin{equation*}
+p_k = {m\choose k} q^k (1-q)^{m-k}
+\end{equation*}
+and pgf
+\begin{eqnarray*}
+P(z) &=& (1+q(z-1))^m
+\end{eqnarray*} \vspace{2mm}
+\item The mean is $\mathrm{E~}N = mq$ and the variance is $\mathrm{Var~}N =
+mq(1-q)$
+ \end{itemize}
+\end{frame}
+
+\section{The ($a, b$, 0) Class}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{The ($a, b$, 0) Class}
+\begin{itemize}
+   \item Recall the notation: $p_k= \Pr(N = k)$ \vspace{2mm}
+ \item \textit{Definition}. A count distribution is a member of the \textcolor{blue}{($a, b$, 0) class} if the probabilities $p_k$ satisfy
+\begin{equation*}
+\frac{p_k}{p_{k-1}}=a+\frac{b}{k},
+\end{equation*}
+for constants $a,b$ and for $k=1,2,3, \ldots $ \vspace{2mm}
+\begin{itemize}
+\item There are only three distributions that are members of the ($a,b$,0) class. They are the Poisson ($a=0$), binomial ($a<0$), and negative binomial
+($a>0$) \vspace{2mm}
+\item The recursive expression provides a computationally efficient way to generate
+probabilities
+\end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{The ($a, b$, 0) Class - Special Cases}
+\begin{itemize}
+   \item \textit{Example: Poisson Distribution}.
+   \begin{itemize}
+   \item Recall $p_k =\frac{\lambda^k}{k!}e^{-\lambda}$. Examining the ratio,
+\begin{equation*}
+\frac{p_k}{p_{k-1}} =
+\frac{\lambda^k/k!}{\lambda^{k-1}/(k-1)!}\frac{e^{-\lambda}}{e^{-\lambda}}=
+\frac{\lambda}{k} \vspace{2mm}
+\end{equation*}
+Thus, the Poisson is a member of the ($a, b$, 0) class with $a = 0$,
+$b = \lambda$, and initial starting value $p_0 = e^{-\lambda}$
+\vspace{2mm}
+\end{itemize}
+
+\textbf{Other special cases} (Please check)
+
+\item \textit{Example: Binomial Distribution}. Member of the ($a, b$, 0) class with $a = \frac{-q}{1-q},$ $b = \frac{(m+1)q}{1-q},$ and $p_0 =
+(1-q)^m$ \vspace{2mm}
+
+\item \textit{Example: Negative Binomial Distribution}. Member of the ($a, b$, 0) class with $a = \frac{\beta}{1+\beta},$ $b = \frac{(r-1)\beta}{1+\beta},$ and $p_0 = (1+\beta)^{-r}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{The ($a, b$, 0) Class - Exercises}
+\textit{Exercise.}  A discrete probability distribution has the
+following properties:
+\begin{eqnarray*}
+p_k&=&c\left( 1+\frac{1}{k}\right) p_{k-1}, \:\:\: k=1,2,3, \dots \\
+p_0&=& 0.5
+\end{eqnarray*} \vspace{2mm}
+Determine the expected value of this discrete random variable
+\vspace{4mm}
+
+\textit{Exercise.} A discrete probability distribution has the
+following properties:
+\begin{eqnarray*}
+\Pr(N=k) = \left( \frac{3k+9}{8k}\right) \Pr(N=k-1), ~~~k=1,2,3,\ldots
+\end{eqnarray*} \vspace{2mm}
+Determine the value of $\Pr(N=3)$
+
+\end{frame}
+
+\section{Estimating Frequency Distributions}
+
+\begin{frame}%[shrink=2]
+ \frametitle{Parameter Estimation}
+\begin{itemize}\scalefont{0.9}
+\item The customary method of estimation is \textbf{maximum likelihood} %\vspace{2mm}
+\item To provide intuition, we outline the ideas in the context of Bernoulli distribution %\vspace{2mm}
+\begin{itemize}\scalefont{0.9}
+\item This is a special case of the binomial distribution with $m=1$
+\item For count distributions, either there is a claim ($N=1$) or not ($N=0$). The probability mass function is:
+\begin{equation*}
+p_k = \Pr (N=k) = \left\{ \begin{array}{ll}
+1-q & \mathrm{if}\ k=0 \\
+q& \mathrm{if}\ k=1
+\end{array} \right. .
+\end{equation*}
+\end{itemize} \vspace{2mm}
+\item \textcolor{blue}{The Statistical Inference Problem}
+\begin{itemize} \scalefont{0.9}
+\item Now suppose that we have a collection of independent random variables. The $i$th variable is denoted as $N_i$. Further assume they have the same Bernoulli distribution with parameter $q$ %\vspace{2mm}
+\item In statistical inference, we assume that we observe a sample of such random variables. The observed value of the $i$th random variable is $n_i$. Assuming that the Bernoulli distribution is correct, we wish to say something about the probability parameter $q$
+\end{itemize}\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+ \frametitle{Bernoulli Likelihoods}
+\begin{itemize}
+\item \textit{Definition}. The \textcolor{blue}{likelihood} is the observed value of the mass
+function \vspace{2mm}
+\item For a single observation, the likelihood is:
+\begin{equation*}
+\left\{
+\begin{array}{ll}
+1-q & \mathrm{if}\ n_i=0 \\
+q   & \mathrm{if}\ n_i=1
+\end{array}
+\right. .
+\end{equation*} \vspace{2mm}
+\item The objective of \textcolor{blue}{maximum likelihood estimation (MLE)} is to find the parameter values that produce the largest
+likelihood \vspace{2mm}
+\begin{itemize}
+\item Finding the maximum of the logarithmic function yields the same solution as finding the maximum of the corresponding
+function \vspace{2mm}
+\item Because it is generally computationally simpler, we consider the logarithmic (log-) likelihood, written
+as:
+\begin{equation*}
+\left\{
+\begin{array}{ll}
+\ln \left( 1-q\right)  & \mathrm{if}\ n_i=0 \\
+\ln     q              & \mathrm{if}\ n_i=1
+\end{array}\right. .
+\end{equation*}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+ \frametitle{Bernoulli MLE I}
+ \begin{itemize}
+\item More compactly, the log-likelihood of a single observation is:
+\begin{equation*}
+n_i \ln q + (1-n_i)\ln ( 1-q ) \vspace{2mm}
+\end{equation*}
+\item Assuming independence, the log-likelihood of the data set is:
+\begin{equation*}
+L_{Bern}(q)=\sum_i \left\{ n_i \ln q + (1-n_i)\ln ( 1-q ) \right\}
+\end{equation*} \vspace{2mm}
+ \begin{itemize}
+\item The (log) likelihood is viewed as a function of the parameters, with the data held
+fixed \vspace{2mm}
+\item In contrast, the joint probability mass  function is viewed as a function of the realized data,
+with the parameters held fixed \vspace{2mm}
+\end{itemize}
+\item The method of maximum likelihood means finding the values of $q$ that maximize the log-likelihood
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+ \frametitle{Bernoulli MLEII}
+ \begin{itemize}
+\item We began with the Bernoulli distribution in part because the log-likelihood is easy to
+maximize \vspace{2mm}
+\item Take a derivative of $L_{Bern}(q)$ to get
+\begin{equation*}
+\frac{\partial}{\partial q} L_{Bern}(q)=\sum_i \left\{ n_i \frac{1}{q} - (1-n_i)\frac{1}{1-q} \right\}
+\end{equation*}
+and solving the equation $\frac{\partial}{\partial q} L_{Bern}(q) =0$ yields
+\begin{equation*}
+\hat{q} = \frac{\sum_i n_i}{\mathrm{sample ~size}}
+\end{equation*}
+  or, in words, the $MLE$ $\hat{q}$ is the fraction of ones in the
+  sample \vspace{2mm}
+\item Just to be complete, you should check, by taking derivatives, that when we solve  $\frac{\partial}{\partial q} L_{Bern}(q) =0$ we are maximizing the function $L_{Bern}(q)$, not minimizing it
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+ \frametitle{Frequency Distributions MLE I}
+ \begin{itemize}\scalefont{0.9}
+\item We can readily extend this procedure to all frequency
+distributions \vspace{2mm}
+\item For notation, suppose that $\theta$ (``theta'') is a parameter that describes a given frequency distribution $\Pr(N=k; \theta) =
+p_k(\theta)$ \vspace{2mm}
+ \begin{itemize}\item In later developments we will let $\theta$ be a vector but for the moment assume it to be a
+ scalar\end{itemize} \vspace{2mm}
+\item The log-likelihood of a a single observation is
+\begin{equation*}
+\left\{
+\begin{array}{ll}
+\ln p_0(\theta) & \mathrm{if}\ n_i=0 \\
+\ln p_1(\theta) & \mathrm{if}\ n_i=1 \\
+\vdots & \vdots
+\end{array}
+\right. .
+\end{equation*}
+that can be written more compactly as
+\begin{equation*}
+\sum_k I(n_i=k) \ln p_k(\theta).
+\end{equation*} \vspace{2mm}
+This uses the notation $I(\cdot)$ to be the indicator of a set (it
+returns one if the event is true and 0 otherwise)
+ \end{itemize}
+ \end{frame}
+
+\begin{frame}[shrink=2]
+ \frametitle{Frequency Distributions MLE II}
+ \begin{itemize}
+\item Assuming independence, the log-likelihood of the data set is
+\begin{equation*}
+L(q)=\sum_i \left\{ \sum_k I(n_i=k) \ln p_k(\theta) \right\} = \left\{ \sum_k m_k\ln p_k(\theta) \right\}
+\end{equation*}
+where we use the notation $m_k$ to denote the number of observations
+that are observed having count $k$ \vspace{2mm}
+
+Using notation: $m_k = \sum_i I(n_i=k)$ \vspace{2mm}
+\item \textbf{Special Case}. \textit{Poisson}. A simple exercise in calculus yields
+$$ \hat{\lambda} =  \frac{\sum_k k m_k}{\mathrm{sample ~size}}$$
+the average claim count
+ \end{itemize}
+ \end{frame}
+
+\section{Other Frequency Distributions}
+
+ \begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Other Frequency Distributions}
+\begin{itemize}
+\item Naturally, there are many other count distributions needed in
+practice \vspace{2mm}
+\item For many insurance applications, one can work with one of our three basic distributions (binomial, Poisson, negative binomial) and allow the parameters to be a function of known explanatory
+variables \vspace{2mm}
+\begin{itemize}
+\item This allows us to explain claim probabilities in terms of known (to the insurer) variables such as age, sex, geographic
+location, etc.
+\item This field of statistical study is known as \textbf{regression analysis} - it is an important topic that we will not pursue in this
+course \vspace{2mm}
+ \end{itemize}
+\item To extend our basic count distributions to alternatives needed in practice, we consider two approaches:
+\begin{itemize}
+\item Zero truncation or modification
+\item Mixing
+ \end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Zero Truncation or Modification}
+
+\begin{frame}%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Zero Truncation or Modification}
+\begin{itemize}
+\item Why truncate or modify zero?
+\begin{itemize}
+\item If we work with a database of claims, then there are no zeroes!
+\item In personal lines (like auto), people may not want to report that first claim
+(why?) \vspace{2mm}
+ \end{itemize}
+\item Let's modify zero probabilities in terms of the $(a,b,0)$
+class \vspace{2mm}
+\item \textit{Definition}. A count distribution is a member of the \textcolor{blue}{($a, b$, 1) class} if the probabilities $p_k$ satisfy
+\begin{equation*}
+\frac{p_k}{p_{k-1}}=a+\frac{b}{k},
+\end{equation*}
+for constants $a,b$ and for $k=2,3, \ldots $ \vspace{2mm}
+\item Note that this starts at $k=2$, not $k=1$ (starts at $p_1$, not
+$p_0$) \vspace{2mm}
+\item Thus, all distributions that are members of the ($a, b$, 0) are members of the ($a, b$, 1) class. Naturally, there are additional distributions that are members of this wider class
+ \end{itemize}
+\end{frame}
+
+ \begin{frame}%[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+ \frametitle{Zero Truncation or Modification}
+\begin{itemize}\scalefont{0.8}
+\item Pick a specific distribution in the ($a, b$, 0) class: \vspace{2mm}
+\begin{itemize}
+\item Consider $p_k^0$ to be a probability for this member of $(a,b,0)$
+\item Let $p_k^M$ be the corresponding probability for a member of $(a,b,1)$, where the $M$ stands for ``modified''
+\item Pick a new probability of a zero claim, $p_0^M$, and define
+\begin{eqnarray*}
+c = \frac{1-p_0^M}{1-p_0^0} .
+\end{eqnarray*} %\vspace{2mm}
+\item We then calculate the rest of the modified distribution as
+\begin{eqnarray*}
+p_k^M =c p_k^0
+\end{eqnarray*} %\vspace{2mm}
+ \end{itemize}
+ \item \textit{Special Case: Poisson Truncated at Zero.} For this case, we assume that $p_0^M=0$, so that the probability of $N=0$ is zero, hence the name ``truncated at zero'' %\vspace{2mm}
+  \item For this case, we use the letter $T$ to denote probabilities instead of $M$, so we use $p_k^T$ for probabilities. Thus,
+\begin{eqnarray*}
+p_k^T&=&
+\left \{
+\begin{array}{cc}
+0 & k=0\\ \frac{1}{1-p_0^0}p_k^0 & k \ge 1\\
+\end{array}
+\right.
+\end{eqnarray*}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+\frametitle{Modified Poisson Example} \textit{Example: Zero
+Truncated/Modified Poisson}. Consider a Poisson distribution with
+parameter $\lambda=2$ \vspace{2mm}
+
+We show how to calculate $p_k, k=0,1,2,3$, for the usual
+(unmodified), truncated, and a modified version with $p_0^M=0.6$
+\vspace{2mm}
+
+\textit{Solution.} For the Poisson distribution as a member of the
+($a,b$,0) class, we have $a=0$ and $b=\lambda=2$ \vspace{2mm}
+
+Thus, we may use the recursion $p_k = \lambda p_{k-1}/k= 2
+p_{k-1}/k$ for each type, after determining starting probabilities
+\vspace{2mm}
+
+\bigskip
+\scalefont{0.8}
+\begin{tabular}{cccc}
+\hline
+         k &     $p_k$ &   $p_k^T$ &   $p_k^M$ \\
+\hline
+         0 & $p_0=e^{-\lambda}=0.135335$ &          $p_0^T$ = 0 &        $p_0^M$ = 0.6 \\
+
+         1 & $p_1=p_0(0+\frac{\lambda}{1})=0.27067$ & $p_1^T=\frac{p_1}{1-p_0}=0.313035$ & $p_1^M$=$\frac{1-p_0^M}{1-p_0}~p_1=0.125214$ \\
+
+         2 & $p_2=p_1\left( \frac{\lambda}{2}\right)=0.27067$ & $p_2^T=p_1^T\left(\frac{\lambda}{2}\right)=0.313035$ & $p_2^M=p_1^M\left(\frac{\lambda}{2}\right)=0.125214$ \\
+
+         3 & $p_3=p_2\left(\frac{\lambda}{3}\right)=0.180447$ & $p_3^T=p_2^T\left(\frac{\lambda}{3}\right)=0.208690$ & $p_3^M=p_2^M\left(\frac{\lambda}{3}\right)=0.083476$ \\
+\hline
+\end{tabular}\scalefont{1.25}
+\end{frame}
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+\frametitle{Modified Distribution Exercise} \textit{Exercise: Course
+3, May 2000, Exercise 37.} You are given: \vspace{2mm}
+
+\begin{itemize}
+\item $p_k$ denotes the probability that the number of claims equals $k$ for
+$k=0,1,2,\ldots$ \vspace{2mm}
+\item $\frac{p_n}{p_m}=\frac{m!}{n!}, m\ge 0, n\ge 0$ \vspace{2mm}
+\end{itemize}
+
+Using the corresponding zero-modified claim count distribution with
+$p_0^M=0.1$, calculate $p_1^M$
+
+\end{frame}
+
+\subsection{Mixture Distributions}
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+\frametitle{Mixtures of Finite Populations}
+\begin{itemize}
+\item Suppose that our population consists of several subgroups, each having their own
+distribution \vspace{2mm}
+\item We randomly draw an observation from the population, without knowing from which subgroup we are drawing
+\vspace{2mm}
+\item For example, suppose that $N_1$ represents claims from ``good'' drivers and $N_2$ represents claims from ``bad'' drivers. We draw
+\begin{equation*}
+N =
+\begin{cases}
+N_1  &  \text{with prob~}\alpha\\
+N_2  &   \text{with prob~}(1-\alpha) .\\
+\end{cases}
+\end{equation*} \vspace{2mm}
+\item Here, $\alpha$ represents the probability of drawing a ``good''
+driver \vspace{2mm}
+\item ``Mixture'' of two subgroups
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+\frametitle{Finite Population Mixture Example}
+
+\textit{Exercise. Exam "C" 170.} In a certain town the number of
+common colds an individual will get in a year follows a Poisson
+distribution that depends on the individual's age and smoking
+status\vspace{2mm}
+
+The distribution of the population and the mean number of colds are
+as follows: \vspace{2mm} \scalefont{0.8}
+\begin{center}
+\begin{tabular}{l|cc}
+\hline           & Proportion of population & Mean number of colds \\ \hline
+  Children &        0.3 &          3 \\
+Adult Non-Smokers &        0.6 &          1 \\
+Adult Smokers &        0.1 &          4 \\\hline
+\end{tabular}\end{center}
+\scalefont{1.25} \vspace{2mm}
+  \begin{enumerate}
+  \item Calculate the probability that a randomly drawn person has 3 common colds in a
+  year \vspace{2mm}
+  \item Calculate the conditional probability that a person with exactly 3 common colds in a year is an adult
+  smoker
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+\frametitle{Mixtures of Infinitely Many Populations}
+\begin{itemize}
+\item We can extend the mixture idea to an infinite number of
+populations (subgroups) \vspace{2mm}
+\item To illustrate, suppose we have a population of drivers. The $i$th person has their own (personal) Poisson distribution with expected number of claims,
+$\lambda_i$ \vspace{2mm}
+\item For some drivers, $\lambda$ is small (good drivers), for others it is high (not so good drivers). There is a distribution of
+$\lambda$ \vspace{2mm}
+\item A convenient distribution for $\lambda$ is a \textcolor{blue}{gamma distribution} with parameters $(\alpha,
+\theta)$ \vspace{2mm}
+ \item Then, one can check that if $N|\Lambda \sim$ Poisson$(\Lambda)$
+and if $\Lambda \sim$ gamma$(\alpha, \theta)$:
+\begin{eqnarray*}
+N &\sim& \text{Negative Binomial} (r = \alpha, \beta = \theta)
+\end{eqnarray*}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}%[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+\frametitle{Negative Binomial as a Gamma Mixture of Poissons}
+\scalefont{0.9}
+\textit{Example}. Suppose that $N|\Lambda \sim$ Poisson$(\Lambda)$
+and that $\Lambda \sim$ gamma with mean of 1 and variance of 2.
+Determine the probability that $N=1$ \vspace{2mm}
+
+\textit{Solution.} For a gamma distribution with parameters
+$(\alpha, \theta)$, we have that mean  is $ \alpha \theta$ and the
+variance is $\alpha \theta^2$. Thus:
+\begin{eqnarray*}
+\alpha &=& \frac{1}{2} \text{   and   } \theta =2 \vspace{2mm}
+\end{eqnarray*}
+
+Now, one can directly use the negative binomial approach to get $r =
+\alpha = \frac{1}{2}$ and $\beta= \theta =2 $. Thus:
+\begin{eqnarray*}
+\Pr(N=1) = p_1  &=& {1+r-1 \choose 1}(\frac{1}{(1+\beta)^r})(\frac{\beta}{1+\beta})^1 \\
+&=&                 {1+\frac{1}{2}-1 \choose 1}{\frac{1}{(1+2)^{1/2}}}(\frac{2}{1+2})^1\\
+&=&  \frac{1}{3^{3/2}} = 0.19245
+\end{eqnarray*}
+
+\end{frame}
+
+\section{Model Selection}
+
+\begin{frame}[shrink=3]
+  \frametitle{Example: Singapore Automobile Data}
+\begin{itemize}
+\item A 1993 portfolio of $n=7,483$ automobile insurance policies from a major insurance company in
+Singapore \vspace{2mm}
+\item The count variable is the number of automobile accidents per
+policyholder \vspace{2mm}
+\item  There were on average $ 0.06989$ accidents per person \vspace{2mm}
+\end{itemize}
+
+\scalefont{0.8}
+\begin{equation*}
+\begin{tabular}{crr}
+\hline \multicolumn{3}{c}{\textbf{Table. Comparison of Observed to Fitted Counts }} \\
+\multicolumn{3}{c}{\textbf{Based on Singapore Automobile Data}} \\
+\hline
+Count & Observed & Fitted Counts using the \\
+$(k)$ & $(m_k)$ & Poisson Distribution $(n\widehat{p}_k)$ \\
+\hline
+0 & 6,996 & 6,977.86 \\
+1 & 455 & 487.70 \\
+2 & 28 & 17.04 \\
+3 & 4 & 0.40 \\
+4 & 0 & 0.01 \\ \hline Total & 7,483 & 7,483.00 \\ \hline
+\end{tabular}
+\end{equation*}
+\scalefont{1.25} \vspace{2mm}The average is $\bar{N} = \frac{0\cdot
+6996 + 1 \cdot 455 + 2 \cdot 28 + 3 \cdot 4 + 4 \cdot 0}{7483} =
+0.06989$
+
+\end{frame}
+
+\begin{frame}[shrink=2]
+  \frametitle{Singapore Data: Adequacy of the Poisson Model}
+\begin{itemize}
+\item With the Poisson distribution: \vspace{2mm}
+\begin{itemize}
+
+\item The maximum likelihood estimator of $\lambda$ is
+$\widehat{\lambda}=\overline{N}$ \vspace{2mm}
+\item Estimated probabilities, using $\widehat{\lambda}$, are denoted as
+$\widehat{p}_k$ \vspace{2mm}
+%\item Fitted counts are 7,483  times the fitted probabilities
+%$(n\widehat{p}_j)$.
+\end{itemize}
+\pause
+\item For goodness of fit, consider \emph{Pearson's chi-square statistic}
+\begin{equation*}
+\sum_k\frac{\left( m_k-n\widehat{p}_k \right) ^{2}}{n\widehat{p}_k}.
+\end{equation*}
+
+\begin{itemize}
+\item Assuming that the Poisson distribution is a correct model; this statistic has an asymptotic chi-square
+distribution \vspace{2mm}
+\begin{itemize}\item The degrees of freedom ($df$) equals the number of cells minus one minus the number of estimated parameters \vspace{2mm}\end{itemize}
+\item For the Singapore data, this is $df=5-1-1=3$ \vspace{2mm}
+\item The statistic is 41.98; the basic Poisson model is inadequate
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+\frametitle{Example. Course C/Exam 4. May 2001, 19}
+
+During a one-year period, the number of accidents per day was
+distributed as follows: \vspace{2mm}
+
+\begin{tabular}{l|rrrrrrr}\hline
+Number of Accidents &          0 &          1 &          2 &          3 &          4 &      5      \\
+Number of Days &        209 &        111 &         33 &          7 &
+3 &          2
+\\ \hline
+\end{tabular}
+
+\vspace{2mm}
+
+You use a chi-square test to measure the fit of a Poisson
+distribution with mean 0.60 \vspace{2mm}
+
+The minimum expected number of observations in any group should be 5
+\vspace{2mm}
+
+The maximum number of groups should be used
+
+\vspace{2mm}
+
+Determine the chi-square statistic
+\end{frame}
+
+ \end{document}
+
+
+\begin{frame}[shrink=2]%\beamerdefaultoverlayspecification{<+->}
+\frametitle{Instructor Notes}
+\begin{itemize}
+   \item
+\end{itemize}
+\end{frame}
+
+
+\textcolor{blue}{temp}

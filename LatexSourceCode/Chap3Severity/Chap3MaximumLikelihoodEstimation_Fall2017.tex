@@ -1,0 +1,211 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+  \usetheme{Madison}
+  \usefonttheme[onlymath]{serif}
+}
+
+% % % % to make navigation two lines
+\usepackage{ragged2e}
+
+\makeatletter
+\setbeamertemplate{section in head/foot}{%
+    \parbox[c][0.33cm][t]{\dimexpr(\textwidth-1.3cm)/\beamer@sectionmax\relax}{%
+        \RaggedRight\fontsize{4}{4}\selectfont\insertsectionhead}}
+\setbeamertemplate{footline}[frame number]
+\makeatother
+% % % %
+\usepackage{booktabs, calc, rotating}
+\usepackage{scalefnt}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage{alltt}
+
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{blocks}[rounded][shadow=true]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  CHANGE THE TITLE AND INPUT FILE ACCORDING TO THE CHAPTER THAT YOU WISH TO COMPILE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[Inference]{Maximum Likelihood Estimation}
+
+\date[Fall 2017]{Fall 2017}
+%Personal definitions - Bayes Regression
+\def\bsb{\boldsymbol \beta}
+\def\bsa{\boldsymbol \alpha}
+\def\bsm{\boldsymbol \mu}
+\def\bsS{\boldsymbol \Sigma}
+\def\bsx{\boldsymbol \xi}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Outline}
+     \tableofcontents[part=1]
+\end{frame}
+
+\part<presentation>{Main Talk}
+
+\section{Maximum Likelihood: Estimation}
+
+\begin{frame}[shrink=2]
+\frametitle{Maximum Likelihood Estimation (MLE)}
+\begin{itemize}
+\item Why use maximum likelihood estimation? \vspace{2mm}
+\begin{itemize}
+\item General purpose tool - works in many situations (data can be censored, truncated, include covariates, time-dependent, and so
+forth) \vspace{2mm}
+
+\item It is ``optimal,'' the best, in the sense that it has the smallest variance among the class of all unbiased estimators. (Caveat: for large sample
+sizes) \vspace{2mm}
+\end{itemize}
+\item A drawback: Generally, maximum likelihood estimators are computed iteratively, no closed-form
+solution \vspace{2mm}
+\begin{itemize}
+\item For example, you may recall a ``Newton-Raphson'' iterative algorithm from
+calculus \vspace{2mm}
+
+\item Iterative algorithms require starting values. For some problems, the choice of a close starting value is critical
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Likelihood and Log-Likelihood Functions}
+\begin{itemize}\scalefont{0.9}
+\item Let $\mathrm{f}(\cdot;\boldsymbol\theta)$ be the probability mass function if $X$ is discrete or the probability density function if it is continuous %\vspace{2mm}
+
+\item The likelihood is a function of the parameters ($\boldsymbol \theta$) with the data ($\mathbf{x}$)  fixed rather than a function of the data with the parameters fixed %\vspace{2mm}
+
+\item Define the \emph{likelihood function},
+\begin{equation*}
+L(\boldsymbol \theta) = L(\mathbf{x};\boldsymbol \theta ) =
+\prod_{i=1}^n \mathrm{f}(x_i;\boldsymbol \theta),
+\end{equation*}
+evaluated at a realization $\mathbf{x}$ %\vspace{2mm}
+
+\item Define the \emph{log-likelihood function},
+\begin{equation*}
+l(\boldsymbol \theta) = l(\mathbf{x};\boldsymbol \theta ) = \ln
+L(\boldsymbol \theta) = \sum_{i=1}^n \ln \mathrm{f}(x_i;\boldsymbol
+\theta),
+\end{equation*}
+evaluated at a realization $\mathbf{x}$ %\vspace{2mm}
+
+\item In the case of independence, the joint density function can be expressed as a product of the marginal
+density functions and, by taking logarithms, we can work with sums
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Example: Pareto Distribution}
+\begin{itemize}
+\item Suppose that $X_1, \ldots, X_n$ represent a random sample from a single-parameter Pareto with cumulative distribution function:
+\begin{equation*}
+\mathrm{F}(x) = 1- \left(\frac{500}{x}\right)^{\alpha}, ~~~~ x>500
+\vspace{2mm}
+\end{equation*}
+\item In this case, the single parameter is $\theta = \alpha$ \vspace{2mm}
+
+\item The corresponding probability density function is $\mathrm{f}(x) = 500^{\alpha} \alpha x^{-\alpha-1}$
+and the logarithmic likelihood is
+\begin{equation*}
+l(\boldsymbol \alpha) = \sum_{i=1}^n \ln \mathrm{f}(x_i;\alpha) = n
+\alpha \ln 500 +n \ln \alpha -(\alpha+1)  \sum_{i=1}^n \ln x_i .
+\end{equation*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Maximum Likelihood Estimators}
+\begin{itemize}
+\item The value of $\boldsymbol \theta$, say $\hat{\theta}_{MLE}$, that maximizes $L(\boldsymbol \theta)$ is called the\emph{ maximum likelihood
+estimator} \vspace{2mm}
+
+\item Maximum likelihood estimators are values of the parameters $\boldsymbol \theta$ that are ``most likely'' to have been produced by the
+data \vspace{2mm}
+
+\item Because $\ln(\cdot)$ is a one-to-one function, we can also determine $\hat{\theta}_{MLE}$ by maximizing the log-likelihood function, $l(\boldsymbol \theta)$
+\end{itemize}
+
+\bigskip
+
+\noindent\textbf{Example. Course C/Exam 4. May 2000, 21.} You are
+given the following five observations: 521, 658, 702, 819, 1217. You
+use the single-parameter Pareto with cumulative distribution
+function:
+\begin{equation*}
+\mathrm{F}(x) = 1- \left(\frac{500}{x}\right)^{\alpha}, ~~~~ x>500 .
+\end{equation*} \vspace{2mm}
+
+Calculate the maximum likelihood estimate of the parameter $\alpha$
+\end{frame}
+
+
+
+\section{Maximum Likelihood: Model Validation}
+
+\begin{frame}%[shrink=2]
+\frametitle{Likelihood Ratio Test}\scalefont{0.9}
+One important type of inference is to select one of two candidate models, where one model (reduced model) is a special case of the other model (full model)
+%\vspace{2mm}
+
+In a \textbf{Likelihood Ratio Test}, we conduct the following hypothesis test:
+\begin{itemize}\scalefont{0.9}
+\item $H_0$: The reduced model is correct
+\item $H_1$: The full model is correct \vspace{2mm}
+\end{itemize} %\vspace{2mm}
+
+To conduct the Likelihood Ratio Test: %\vspace{2mm}
+
+\begin{itemize}\scalefont{0.9}
+\item Determine the maximum likelihood estimator for the full model, $\hat{\theta}_{MLE}$ %\vspace{2mm}
+\item Now assume that $p$ restrictions are placed on the parameters of the full model to create the reduced model; determine the maximum likelihood estimator for the reduced model, $\hat{\theta}_{Reduced}$ %\vspace{2mm}
+\item The statistic, $LRT= 2 \left( l(\hat{\theta}_{MLE}) - l(\hat{\theta}_{Reduced}) \right)$, is called the likelihood ratio (a difference of the logs is the log of the ratio. Hence, the term ``ratio.'') %\vspace{2mm}
+\item The critical value for the likelihood ratio test is a percentile from a chi-square distribution with degrees of freedom equal to $p$ %\vspace{2mm}
+\item This allows us to judge which of the two models is correct. If the statistic $LRT$ is large relative to the critical value, then we reject the reduced model in favor of the full model
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Information Criteria}
+\begin{itemize}\scalefont{0.9}
+\item The following statistics can be used when comparing several candidate models that are not necessarily nested (as in the Likelihood Ratio Test) One picks the model that maximizes the criterion %\vspace{2mm}
+\item \emph{Akaike's Information Criterion}
+\begin{equation*}
+AIC = l(\hat{\theta}_{MLE}) - (number~of~parameters)
+\end{equation*}
+\begin{itemize}\item The additional term $(number~of~parameters)$ is a penalty for the complexity of the model %\vspace{2mm}
+\item Other things equal, a more complex model means more parameters, resulting in a smaller value of the
+criterion %\vspace{2mm}
+\end{itemize}
+\item \emph{Bayesian Information Criterion}
+\begin{equation*}
+BIC = l(\hat{\theta}_{MLE}) - (0.5)(number~of~parameters)\ln
+(number~of~observations)
+\end{equation*} %\vspace{2mm}
+\begin{itemize}\item This measure gives greater weight to the number of
+parameters, resulting in a larger penalty %\vspace{2mm}
+
+\item Other things being equal, $BIC$ will suggest a more parsimonious model than $AIC$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\end{document}
+
+\begin{frame}[shrink=2]
+\frametitle{Instructor Notes}
+\begin{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+
+
+\textcolor{blue}{temp}

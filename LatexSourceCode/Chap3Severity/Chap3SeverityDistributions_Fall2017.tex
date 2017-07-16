@@ -1,0 +1,1087 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+  \usetheme{Madison}
+%    \usetheme[left,hideallsubsections,width=1cm]{UWThemeB}
+  \usefonttheme[onlymath]{serif}
+}
+
+% % % % to make navigation two lines
+\usepackage{ragged2e}
+
+\makeatletter
+\setbeamertemplate{section in head/foot}{%
+    \parbox[c][0.33cm][t]{\dimexpr(\textwidth-1.3cm)/\beamer@sectionmax\relax}{%
+        \RaggedRight\fontsize{4}{4}\selectfont\insertsectionhead}}
+\setbeamertemplate{footline}[frame number]
+\makeatother
+% % % %
+\usepackage{booktabs, calc, rotating}
+\usepackage{scalefnt}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+%\usepackage[T1]{fontenc}
+\usepackage{alltt}
+
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{blocks}[rounded][shadow=true]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  CHANGE THE TITLE AND INPUT FILE ACCORDING TO THE CHAPTER THAT YOU WISH TO COMPILE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[Severity]{Severity Distributions}
+
+\date[Fall 2017]{Fall 2017}
+%Personal definitions - Bayes Regression
+\def\bsb{\boldsymbol \beta}
+\def\bsa{\boldsymbol \alpha}
+\def\bsm{\boldsymbol \mu}
+\def\bsS{\boldsymbol \Sigma}
+\def\bsx{\boldsymbol \xi}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Outline}
+    %\tableofcontents[part=1,pausesections]
+     \tableofcontents[part=1]
+\end{frame}
+
+\part<presentation>{Main Talk}
+
+
+\section[Foundations]{Severity Distributions Foundation}
+
+
+\begin{frame}[shrink=2]
+\frametitle{Important Severity Distributions}
+
+Three important loss severity distributions: \vspace{2mm}
+\begin{itemize}
+\item \textbf{Gamma}
+\begin{itemize}
+\item Fits medium tail lines like physical damage auto and homeowners well
+\item Member of the ``exponential family of distributions''. This means that it is easy to incorporate rating variables into the distribution via generalized linear modeling
+(GLMs) \vspace{2mm}
+\end{itemize}
+\item \textbf{Pareto}
+\begin{itemize}
+\item Fits longer tail lines like injury liability in auto and workers' compensation well
+\item Simple to work with analytically (hence can provide intuition as we develop theory and explain the theory to
+others) \vspace{2mm}
+\end{itemize}
+\item \textbf{GB2 - Generalized Beta of the Second Kind}
+\begin{itemize}
+\item A four parameter distribution family, complex
+\item Yet, many severity distributions can be expressed as a special case of this distribution (good for programming)
+\item Some applications have been fit well by the GB2 where others do not seem to
+work \vspace{2mm}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}%[shrink=2]
+\frametitle{Gamma Distribution}
+
+\begin{itemize}\scalefont{0.9}
+\item The gamma distribution has two parameters,  $\alpha$ and $\theta$ %\vspace{2mm}
+
+\item The probability density function is 0 for $x \le 0$ and for $x>0$
+\begin{eqnarray*}
+f(x) &=& \frac{(\frac{x}{\theta})^{\alpha} e^{-x/\theta}}{x\Gamma(\alpha)} = \frac{1}{\theta^{\alpha} \Gamma(\alpha)} x^{\alpha - 1} e^{-x/\theta}
+\end{eqnarray*} %\vspace{2mm}
+
+\item If $\alpha=1$, the gamma reduces to the familiar \textit{exponential} distribution
+%\vspace{2mm}
+\item The function $\Gamma(\cdot)$ is known as the \textit{gamma function}, defined as
+\begin{equation*}
+\Gamma(\alpha) =  \int_0^{\infty} x^{\alpha-1} e^{-x} ~dx
+\end{equation*} %\vspace{2mm}
+\item Some important facts about the gamma function: %\vspace{2mm}
+
+\begin{itemize}\scalefont{0.9}
+\item For a positive integer $n$, $\Gamma(n) = (n-1)!$ %\vspace{2mm}
+
+\item For more general arguments, one needs to rely on numerical integration to evaluate $\Gamma(\cdot)$. The two main exceptions are:
+\begin{itemize}\scalefont{0.9}
+\item For any $\alpha>0$, $\Gamma(\alpha+1)=\alpha\Gamma(\alpha)$
+\item $\Gamma(0.5)=\sqrt{\pi}$
+\end{itemize}\end{itemize}
+Thus, for example, $\Gamma(2.5)=1.5 \Gamma(1.5) = 1.5 (0.5)
+\Gamma(0.5) = \frac{3}{4} \sqrt{\pi} $
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Exercise} \emph{Example.} Suppose that $X \sim
+gamma(\alpha=2, \theta=100)$, that is, the random variable $X$ has a
+gamma distribution with parameters $\alpha=2$ and  $\theta=100$
+\vspace{2mm}
+
+Determine $\Pr(X \le 60)$
+
+\end{frame}
+
+%\begin{frame}[shrink=2]
+%\frametitle{Incomplete Gamma Function}
+%\begin{itemize}
+%   \item More generally, we define the \textit{incomplete gamma function}
+%\begin{equation*}
+%\Gamma(\alpha;x) =  \int_0^x t^{\alpha-1} e^{-t} ~dt
+%\end{equation*} \vspace{2mm}
+
+%\item With this, we may express the gamma distribution function as
+%\begin{equation*}
+%F(x) = \Gamma(\alpha; \frac{x}{\theta}),
+%\end{equation*}
+%so that computing the gamma distribution function is evaluating the
+%incomplete gamma function at a rescaled value of $x$ \vspace{2mm}
+
+%\begin{itemize}\item In general, this is done via numerical integration
+%\item However, when $\alpha$ is a positive integer, one can use integration by parts as in the preceding example to get:
+%\begin{equation*}
+%\Gamma(\alpha; x) = 1 - \sum_{j=0}^{\alpha-1} ~ \frac{x^j
+%e^{-x}}{j!}
+%\end{equation*}
+%In their book, KPW have this as Theorem A.1 \vspace{2mm}
+%\end{itemize}
+%\item \emph{Example - Continued.} Suppose that $X \sim gamma(\alpha=2, \theta=100)$. Determine $\Pr(X \le 60)$.
+%\end{itemize}
+%\end{frame}
+
+
+\begin{frame}[shrink=2]
+\frametitle{Gamma Moments} Use the gamma function to calculate
+moments of a gamma distribution \vspace{2mm}
+\begin{itemize}
+\item Define the $k$th \textit{raw moment} to be
+\begin{eqnarray*}
+\mu_k^{\prime} &=& \mathrm{E~} X^k = \int_0^{\infty} x^k f(x) dx
+\end{eqnarray*} \vspace{2mm}
+
+\item Using a change of variable, $t=x/\theta$, we have
+\begin{eqnarray*}
+\mu_k^{\prime}
+&=& \frac{1}{\theta^{\alpha} \Gamma(\alpha)} \int_0^{\infty} x^{\alpha+k-1} \exp(-x/\theta) ~dx \\
+&=& \frac{\theta^{\alpha+k}}{\theta^{\alpha} \Gamma(\alpha)} \int_0^{\infty} t^{\alpha+k-1} \exp(-t) dt \\
+&=& \frac{\theta^k }{\Gamma(\alpha)} \Gamma(\alpha+k).
+\end{eqnarray*} \vspace{2mm}
+\item With $k=1$, we have $\mu = \mu_1^{\prime}
+= \theta \frac{\Gamma(\alpha+1)}{\Gamma(\alpha)} = \alpha \theta$
+\vspace{2mm}
+\item Check that:
+\begin{itemize}
+\item $ \mu_2^{\prime} = \theta^2 \alpha (\alpha+1), $ \hspace{0.2in} $ \mathrm{Var}(X)  =\theta^2
+\alpha,
+$ \hspace{0.2in} $\mu_k^{\prime} = \theta^k(\alpha+k-1) \cdots
+\alpha$
+\end{itemize}\end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=2]
+\frametitle{Gamma Moment Generating Function}
+\begin{itemize}
+\item The gamma moment generating function (mgf) is
+\begin{eqnarray*}
+M(t) = \mathrm{E~} e^{tX} &=& \frac{1}{\theta^{\alpha}\Gamma(\alpha)}\int_0 ^{\infty} x^{\alpha-1} e^{tx} e^{-x/\theta} dx\\
+&=& \frac{1}{\theta^{\alpha}\Gamma(\alpha)}\int_0 ^{\infty} x^{\alpha-1} \exp\left\{-x\left(\frac{1-\theta t}{\theta}\right)\right\} dx\\
+&=& \frac{1}{\theta^{\alpha}\Gamma(\alpha)} \left(\frac{\theta}{1-\theta t}\right)^{\alpha} \Gamma(\alpha)\\
+&=& (1 - \theta t)^{-\alpha} .
+\end{eqnarray*}
+\item To check this result, first note that $M(0) = (1 - \theta 0)^{-\alpha} = 1$, as anticipated. Next, taking derivatives, we have
+\begin{eqnarray*}
+M^{\prime}(t) = \frac{\partial}{\partial t} M(t) &=& -\alpha (1 - \theta t)^{-\alpha - 1}(-\theta) = \alpha \theta (1 - \theta t)^{-\alpha - 1}
+\end{eqnarray*}
+\item Evaluating this at 0 yields $M^{\prime}(0) = \alpha \theta =\mu$, as anticipated
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}%[shrink=2]
+\frametitle{Pareto Distribution}
+\begin{itemize}\scalefont{0.9}
+\item The Pareto with parameters $\alpha$ and $\theta$ has probability density function:
+\begin{eqnarray*}
+\mathrm{f}(x) = \frac{\alpha \theta^{\alpha}}{(x+\theta)^{\alpha+1}}
+\end{eqnarray*} %\vspace{2mm}
+and moments
+\begin{eqnarray*}
+\mu_k^{\prime}= \frac{\theta^k k!}{(\alpha-1) \cdots (\alpha-k)}
+\end{eqnarray*} %\vspace{2mm}
+\item Because moments are not finite when $k \ge \alpha$, the moment generating function is not well-defined %\vspace{2mm}
+\item Unlike the gamma, there is a simple expression for the distribution function
+\begin{eqnarray*}
+\mathrm{F}(x) &=& \int^x_0 \mathrm{f}(y) dy = 1 -
+\left(\frac{\theta}{x+\theta}\right)^{\alpha}
+\end{eqnarray*} %\vspace{2mm}
+\item This means that it is easy to compute quantiles
+\begin{itemize}\scalefont{0.9}
+\item For example, find $x$ so that 0.95 = F(x) (the 95th percentile) %\vspace{2mm}
+\item Easy calculations show that this is $\theta \left[(0.05)^{-1/\alpha} - 1\right]$ %\vspace{2mm}
+\item In general, the $p$th percentile/quantile is $\theta \left[(1-p)^{-1/\alpha} - 1\right]$
+\end{itemize}\end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=2]
+\frametitle{GB2 - Generalized Beta of the Second Kind}
+\begin{itemize}
+\item In KPW, the GB2 is known as a \textit{transformed beta
+distribution} \vspace{2mm}
+
+\item The pdf (KPW, Appendix A2.1.1) is
+\begin{eqnarray*}
+f(x) &=& \frac{\Gamma(\alpha + \tau)}{\Gamma(\alpha)\Gamma(\tau)}
+   \frac{\gamma (x/\theta)^{\gamma \tau}}
+   {x\left[1+(x/\theta)^{\gamma}\right]^{\alpha + \tau}}
+\end{eqnarray*} \vspace{2mm}
+
+with moments
+\begin{eqnarray*}
+\mathrm{E~}X^k &=& \theta^k \frac{\Gamma(\tau + \frac{k}{\gamma})\Gamma(\alpha-\frac{k}{\gamma})}{\Gamma(\alpha)\Gamma(\tau)} .
+\end{eqnarray*} \vspace{2mm}
+
+\item In the text by Frees on Regression, the GB2 distribution is cited but with the parameters
+$\alpha_1  = \alpha$, $\alpha_2  =\tau$, $\gamma = 1/\sigma$,
+$\theta = e^\mu$
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{GB2 Special Cases} The GB2 a four parameter family of
+distributions that captures many other distributions, either as
+special cases or as limiting results: \vspace{2mm}
+
+\begin{itemize}
+\item \textit{Special Case: Burr Distribution}. Use the GB2 distribution with $\tau =
+1$ \vspace{2mm}
+
+\item \textit{Special Case: Pareto Distribution}. Use the GB2 distribution with $\gamma=\tau =
+1$ \vspace{2mm}
+
+\item \textit{Limiting Case: Generalized Gamma Distribution} \vspace{2mm}
+
+Replace $\theta$ by $\theta \tau^{1/\gamma}$ \vspace{2mm}
+
+Then, one can show that
+\begin{eqnarray*}
+\lim_{\tau \to \infty} f_{GB2}(x; \theta \tau^{1/\gamma}, \alpha, \tau, \gamma) = f(x),
+\end{eqnarray*}
+the pdf of a \textit{generalized gamma}. In KPW, Appendix A.3.1,
+p.673, the generalized gamma is called a \emph{transformed gamma}
+\end{itemize}
+\end{frame}
+
+
+\section{Creating Distributions Using Transformations}
+
+
+\begin{frame}[shrink=2]
+\frametitle{Creating Distributions Using Transformations} There are
+many distributions available to the analyst \vspace{2mm}
+
+\begin{itemize}
+\item In this section, we consider distributions that are created by transforming the random variable of a distribution.
+Specifically: \vspace{2mm}
+
+\begin{itemize}
+\item  Multiplication by a constant ($Y = cX$) \\
+\item Raising to a power ($Y = X^\tau$)\\
+\item Exponentiation $(Y = e^X)$\\
+\end{itemize}\vspace{2mm}
+
+\item In the next section, we consider ways of combining distributions to form a distribution of interest. Specifically: \vspace{2mm}
+
+\begin{itemize}
+\item Mixing
+\item Splicing
+\end{itemize}\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Multiplication by a Constant}
+\begin{itemize}
+\item Multiplying a random variable by a positive constant is a simple type of
+transformation \vspace{2mm}
+
+\item It is also easy to interpret: \vspace{2mm}
+
+\begin{itemize}
+\item Think of $X$ as this year's losses and assume that we have an 8\% inflation rate. Then, we can model next year's losses as $Y =
+1.08X$ \vspace{2mm}
+
+\item We also want to readily go from dollars to thousands of dollars ($c=1/1000$) or from dollars to Euros (or swapping any set of
+currencies) \vspace{2mm}
+
+\end{itemize}
+\item More generally, let $Y=cX$ and use
+\begin{eqnarray*}
+F_Y (y) &=& \Pr( Y \le y) = \Pr \left(X \le \frac{y}{c}\right)= F_X \left(\frac{y}{c}\right)\\
+f_Y (y) &=& \frac{1}{c}~f_X\left(\frac{y}{c}\right)
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Scale Distributions}
+\begin{itemize}\scalefont{0.9}
+\item In a location-scale distribution, the transformed variable $Y = c(X-a)$ has a distribution from the same family as the random variable $X$ %\vspace{2mm}
+\begin{itemize}\scalefont{0.9}
+\item Here, $a$ and $c>0$ are constants
+\item The normal distribution is the usual example %\vspace{2mm}
+\end{itemize}
+\item In a scale distribution,  the transformed variable $Y = c X$ has a distribution from the same family as the random variable $X$ %\vspace{2mm}
+\begin{itemize}\scalefont{0.9}
+\item Many loss distributions are scale distributions
+\item Typically, one uses $\theta$ as the scale parameter. If $X$ comes from a distribution with parameter $\theta$, then $Y = c X$ has the same distribution with scale parameter $\theta^{\ast} = c \theta$ %\vspace{2mm}
+\end{itemize}
+\item \textit{Example: Special Case - Gamma Distribution}. Suppose that $X$ has a gamma distribution with $\alpha = 4$ and $\theta = 10,000$ %\vspace{2mm}
+\begin{itemize}\scalefont{0.9}
+\item The mean is $\alpha \theta = 40,000$ and the standard deviation is $\theta \sqrt{\alpha} = 20,000$ %\vspace{2mm}
+\item Suppose that $Y = X/1000$
+\begin{itemize}\scalefont{0.9}
+\item This has mean 40 and standard deviation 20
+\item Further $Y$ has a gamma distribution with parameters $\alpha = 4$ and $\theta^{\ast} = \theta/1000 = 10$\end{itemize}
+\end{itemize}\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=.5]
+\frametitle{Raising to a Power}
+\begin{itemize}\scalefont{0.9}
+\item Another type of transformation involves raising the random variable to a power, say, $\tau$ %\vspace{2mm}
+\item Consider the transformed random variable $Y = X^{\tau}$. We examine three cases: %\vspace{2mm}
+\scalefont{0.9}
+\begin{eqnarray*}
+&\tau>0&  \text{transformed}\\
+&\tau=-1 &  \text{inverse}\\
+&\tau<0 & \text{inverse transformed}
+\end{eqnarray*}\scalefont{1.1111} %\vspace{2mm}
+\item \textit{Special Case: Exponential Distribution}. Suppose that $X$ has an exponential distribution with parameter $\theta^{\ast}$ and consider $Y=1/X$ %\vspace{2mm}
+\begin{itemize}\scalefont{0.9}
+\item The distribution function of $Y$ is
+\begin{eqnarray*}
+\Pr(Y \le y) &=& \Pr(\frac{1}{X} \le y) = \Pr(\frac{1}{y} \le X) = \exp\left(-\frac{1}{y \theta^\ast}\right) .
+\end{eqnarray*}
+\item Now, define a new parameter $\theta = \frac{1}{\theta^{\ast}}$. With this notation,
+\begin{eqnarray*}
+\Pr(Y \le y) &=& \exp\left(-\frac{\theta}{y}\right).
+\end{eqnarray*}
+\item This distribution is known as an \textit{inverse exponential distribution} with parameter $\theta$. See the appendix of KPW
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Exponential to get a Weibull}
+\textit{Example: Transforming an Exponential to get a Weibull}.
+\begin{itemize}
+\item Start with $X \sim $ exponential distribution with parameter 1. Define the transformed random
+variable:
+\begin{eqnarray*}
+Y = \theta X^{1/\tau}
+\end{eqnarray*} \vspace{2mm}
+
+\item This has distribution
+\begin{eqnarray*}
+F_Y(y) &=& \Pr(Y \le y)\\
+&=& \Pr(X^{1/\tau} \le \frac{y}{\theta}) = \Pr(X \le (\frac{y}{\theta})^{\tau})\\
+&=& 1 - \exp\left(-(\frac{y}{\theta})^\tau\right) ,
+\end{eqnarray*}
+known as a \textit{Weibull distribution} \vspace{2mm}
+
+\item This result will be handy if you want to \emph{simulate} outcomes from a Weibull distribution in Excel (exponential simulation is easy, Weibull is not available)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Transforming the Pareto Distribution} This is from KPW
+Exercise 5.3. We assume that $X \sim$  Pareto with parameters
+$(\alpha, \theta)$ and consider the transformed variable $Y =
+X^{1/\tau}$. We wish to determine the df of $Y$ when $\tau$ is
+positive, equal to -1, and negative
+
+\bigskip
+
+\textit{Solution.} Begin by recalling the df of the Pareto
+\begin{eqnarray*}
+\mathrm{F}_X (x) &=& 1 - \left(\frac{\theta}{x+\theta}\right)^{\alpha} .
+\end{eqnarray*}
+
+\textit{Case} \textcircled{1}. Assume $\tau > 0$. Then,
+\begin{eqnarray*}
+\mathrm{F}_Y (y) &=& \Pr (X^{1/\tau} \le y ) = \Pr (X \le y^\tau ) \\
+& =& \mathrm{F}_X (y^\tau)\\
+&=& 1 - \left(\frac{\theta}{y^\tau+\theta}\right)^{\alpha} .
+\end{eqnarray*}
+Now, define the new parameter $\theta^{\ast} = \theta^{1/\tau} $ so that $\theta^{\ast \tau} = \theta$. With this notation, we have
+\begin{eqnarray*}
+\mathrm{F}_Y (y) &=& 1 - \left(\frac{\theta^{\ast \tau}}{y^{\tau}+\theta^{\ast \tau}}\right)^{\alpha} .
+\end{eqnarray*}
+This is known as a \emph{Burr distribution} with parameters $
+(\alpha, \theta^{\ast}, \tau = \gamma)$
+\end{frame}
+
+
+\begin{frame}%[shrink=2]
+\frametitle{Exponentiation}
+\begin{itemize}\scalefont{0.9}
+\item Another type of transformation involves exponentiating a random variable so that $Y=\exp(X)$ %\vspace{2mm}
+\item The main example of this is the normal distribution. If $X \sim$ normal, then $Y=e^{X} \sim $ a \textit{lognormal
+distribution} %\vspace{2mm}
+\item We can develop the distribution of the new random variable through the relation with the df
+\begin{eqnarray*}
+F_Y (y) = \Pr ( \exp(X) \le y) = \Pr( X \le \ln y) = F_X (\ln y)
+ \end{eqnarray*} %\vspace{2mm}
+and the pdf
+\begin{eqnarray*}
+f_Y (y) = \frac{1}{y} f_X (\ln y) .
+ \end{eqnarray*} %\vspace{2mm}
+\item Remark. This provides a way to simulate a Pareto distribution, by first simulating an exponential random variable and then transforming it
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Creating Distributions by Mixing}
+
+\subsection{Motivation}
+
+\begin{frame}[shrink=2]
+\frametitle{Motivation for Mixing}
+\begin{itemize}
+\item In a mixture distribution,  the outcome (random variable) can be thought of as a random draw from a population of
+outcomes \vspace{2mm}
+
+\item \textit{Example: Pareto Distribution}. Consider the Pareto distribution with survival function
+\begin{eqnarray*}
+S(x) = \left(\frac{\theta}{x+\theta}\right)^\alpha,
+\end{eqnarray*}
+and mean $ \mathrm{E~}X = \frac{\theta}{\alpha-1}$. Let us think
+about two types of populations: \vspace{2mm}
+
+$X_1 \sim \text{Pareto} (\alpha_1, \theta_1)$ "Good Driver"
+
+$X_2 \sim \text{Pareto} (\alpha_2, \theta_2)$ "Bad Driver"
+\vspace{2mm}
+
+\item Suppose that with probability $a$ we draw the loss from a good driver, $X_1$, and with probability $1-a$ we draw the loss from a bad driver,
+$X_2$:
+\begin{eqnarray*}
+Y =
+\begin{cases}
+X_1 & \text{with probability~} a\\
+X_2 &  \text{with probability~} 1-a
+\end{cases}
+\end{eqnarray*} \vspace{2mm}
+
+Our interest is in the distribution of $Y$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=2]
+\frametitle{Mixing Moments}
+\begin{itemize}
+\item To begin, focus on the mean. Using the law of total
+expectations: \vspace{2mm}
+
+\begin{eqnarray*}
+\mathrm{E~}Y = a\mathrm{E~}X_1 + (1-a)\mathrm{E~}X_2 = a \frac{\theta_1}{\alpha_1-1} +  (1-a) \frac{\theta_2}{\alpha_2-1} .
+\end{eqnarray*} \vspace{2mm}
+
+We can also write \vspace{2mm}
+
+\begin{eqnarray*}
+\hspace{-0.8in}Y^2 =
+\begin{cases}
+X_{1}^2 & \text{with probability~} a\\
+X_{2}^2 &  \text{with probability~} 1-a
+\end{cases}
+\end{eqnarray*} \vspace{2mm}
+
+Thus, we have \vspace{2mm}
+
+\begin{eqnarray*}
+\mathrm{E~}Y^2 = a\mathrm{E~}X_{1}^2 + (1-a)\mathrm{E~}X_{2}^2 .
+\end{eqnarray*} \vspace{2mm}
+
+The same argument holds for any moment
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=2]
+\frametitle{Mixing Distribution Function}
+\begin{itemize}
+\item For the distribution function, we have \vspace{2mm}
+\begin{eqnarray*}
+\Pr(Y \le y) &=& \Pr(Y \le y, \text{Good Driver}) + \Pr(Y \le y, \text{Bad Driver})\\
+&=& \Pr(X_1 \le y, \text{Good Driver}) + \Pr(X_2 \le y, \text{Bad Driver})\\
+&=& \Pr(X_1 \le y)\Pr(\text{Good Driver}) + \Pr(X_2 \le y)\Pr(\text{Bad Driver})\\
+&=& a F_{X_1}(y) + (1-a) F_{X_2}(y)
+\end{eqnarray*}
+\end{itemize} \vspace{4mm}
+
+\textit{Example from Exam M Spring 05 \#34}. Suppose that $a$ = 0.8,
+and $X_1 \sim \text{Pareto}(\alpha = 2, \theta = 100), X_2 \sim
+\text{Pareto}(\alpha = 4, \theta = 3000)$ \vspace{2mm}
+
+Determine $\Pr(Y \le 200)$
+\end{frame}
+
+
+
+\subsection{Finite Mixture Distributions}
+
+\begin{frame}%[shrink=2]
+\frametitle{Finite Mixture Distributions}
+\begin{itemize}\scalefont{0.9}
+\item \emph{Definition.} Let $X_1, \ldots, X_k$ be random variables and define
+\begin{eqnarray*}
+Y =\left\{
+\begin{array}{cc}
+X_1 & with~probability~a_1 \\
+\vdots & \vdots \\
+X_k & with~probability~a_k \\
+\end{array}
+\right.
+\end{eqnarray*}
+Here, $a_{j}>0$ and $ a_1+ \cdots + a_k = 1.$ Then, $Y$ is a $k$-point mixture random variable. The df is
+\begin{eqnarray*}
+F_Y(y) = a_1 F_{X_1}(y)+ \cdots +a_k F_{X_k}(y)
+\end{eqnarray*}
+with mean
+\begin{eqnarray*}
+\mathrm{E~}Y = a_1 \mathrm{E~}X_1 + \cdots + a_k \mathrm{E~}X_k.
+\end{eqnarray*}
+\item If $k$ is unknown (but not random), then this a \emph{variable component mixture
+distribution} %\vspace{2mm}
+\item We can always select one or more of the underlying $X_j$ variables to be degenerate (that is, equal to a number with probability one). In this way, we can use the finite mixture framework to create discrete and mixed distributions
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[shrink=2]
+\frametitle{Exponential Example}
+\textit{Example}. Suppose, for a fixed parameter $\theta$, that
+$X|\theta \sim$ exponential with parameter $\theta$. Thus,
+\begin{equation*}
+\Pr(X \le x | \theta) = 1 - e^{-x/\theta}.
+\end{equation*} \vspace{2mm}
+
+Now, think of two populations, each having an exponential
+distribution, but with different parameter values. For concreteness,
+assume
+\begin{equation*}
+ \Theta =
+\begin{cases}
+10 &  \text{with prob~}\alpha\\
+200 & \text{with prob~}(1-\alpha)\\
+\end{cases}
+\end{equation*} \vspace{2mm}
+
+As with the $x$'s, we use an upper case $\Theta$ for a random
+variable and a lower case $\theta$ for a realization of the random
+variable
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Exponential Example II}
+\begin{itemize}
+\item Using the discrete mixing framework, we may write the df of $X$ as
+\begin{equation*}
+\Pr(X \le x) = \alpha(1 - e^{-x/10}) + (1-\alpha)(1-e^{-x/200}) .
+\end{equation*} \vspace{2mm}
+
+\item More generally, we can consider $k$ populations, each with the same
+form of the distribution function $\mathrm{F}(\cdot|\theta)$ and
+allow $\theta$ to vary as
+\[
+\Theta=\left\{
+\begin{array}{ll}
+\theta_1  & \text{prob~} \alpha_1  \\
+\theta_2  & \text{prob~} \alpha_2  \\
+\vdots & \vdots \\
+\theta_K & \text{prob~} \alpha_K \\
+\end{array}
+\right.
+\] \vspace{2mm}
+
+This is our \textit{finite mixture} distribution
+\end{itemize}
+\end{frame}
+
+\subsection{Continuous Mixtures}
+
+\begin{frame}[shrink=2]
+\frametitle{Continuous Mixtures}
+\begin{itemize}
+\item Extend this idea by thinking about an infinite number of
+populations, each with a conditional distribution function that has
+the same structure $\mathrm{F}(\cdot|\theta)$ (e.g., exponential)
+but with a parameter $\theta$ that accounts for population
+differences \vspace{2mm}
+
+\item Assume that the random variable $\Theta$ has pdf $f_\Theta
+(\theta)$ \vspace{2mm}
+
+\item Then, the df is:
+\begin{eqnarray*}
+\mathrm{F}_X(x) = \Pr(X \le x) &=& E_{\Theta} \Pr(X \le x|\Theta)\\
+&=& \int \Pr(X \le x|\theta)f_{\Theta}(\theta) d\theta =\int
+\mathrm{F}(x|\theta)f_{\Theta}(\theta) d\theta
+\end{eqnarray*} \vspace{2mm}
+
+\item The pdf is:
+\begin{eqnarray*}
+f_X (x) &=& \int f_{x | \theta}(x) f_{\Theta}(\theta) d\theta
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Special Case: Gamma Mixtures of Exponentials}
+\begin{itemize}\scalefont{0.9}
+\item \textit{Special case: Gamma Mixtures of Exponentials}. Suppose that each population has an exponential distribution with parameter $1/\theta$, that is, $X|\theta \sim \text{exponential}(\frac{1}{\theta})$:
+\begin{eqnarray*}
+f_{X|\theta}(x) &=& \theta e^{-\theta x}
+\end{eqnarray*} %\vspace{2mm}
+\item Suppose that the distribution of population parameters is governed by a gamma distribution such that $\Theta \sim \text{gamma}(\alpha, \beta)$ %\vspace{2mm}
+\begin{eqnarray*}
+f_{\theta}(\theta) &=&
+\frac{1}{\Gamma(\alpha)\beta^{\alpha}}\theta^{\alpha-1}e^{-\theta/\beta}
+\end{eqnarray*} %\vspace{2mm}
+
+\item The pdf of $X$ is
+\begin{eqnarray*}
+f_X (x) &=&\int f_{x | \theta}(x) f_{\Theta}(\theta) d\theta \\
+&=& \frac{1}{\Gamma(\alpha)\beta^{\alpha}}\int_0 ^{\infty}
+\theta^{\alpha} e^{{-\theta}(x+1/\beta)}d\theta = \frac{\alpha
+\beta}{(1+x\beta)^{\alpha+1}}
+\end{eqnarray*} %\vspace{2mm}
+\item We recognize this as a Pareto distribution with parameters $\alpha$ and $\theta=1/\beta $
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Mixture Expectations}
+\begin{itemize}
+\item For some mixtures such as the above example, we can compute the
+mixture distribution in closed-form \vspace{2mm}
+
+\item However, it is often helpful to
+just consider the moments. For the mean function, using the
+\textit{law of iterated expectations}, we have
+\begin{eqnarray*}
+\mathrm{E~}X &=& \mathrm{E}_{\Theta}[\mathrm{E}(X|\Theta)]
+\end{eqnarray*} \vspace{2mm}
+
+\item This is easily extended to the $k$th moment
+\begin{eqnarray*}
+\mathrm{E~}X^k &=& \mathrm{E}_{\Theta}[\mathrm{E}(X^k|\Theta)]
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+
+\bigskip
+\begin{frame}[shrink=2]
+\frametitle{Mixture Expectations Example}
+\textit{Example. Gamma Mixtures of Exponentials}.
+\begin{itemize}
+\item Assume that $X|\theta \sim$ exponential with parameter $(\frac{1}{\theta})$. Thus, the mean is $\mathrm{E}(X|\theta) =
+1/\theta$, the second raw moment is $\mathrm{E}(X^2|\theta) =
+2/\theta^2$, and the variance is $\mathrm{Var}(X|\theta) = 1/
+\theta^2$ \vspace{2mm}
+
+\item For the parameter distribution, we have $\theta \sim \text{gamma}(\alpha,
+\beta)$ \vspace{2mm}
+
+\item One can check that
+\begin{eqnarray*}
+\mathrm{E~}X = \frac{1}{\beta(\alpha-1)}
+\end{eqnarray*}
+and
+\begin{eqnarray*}
+\mathrm{Var~}X = \frac{\alpha}{\beta^2(\alpha-1)^2(\alpha-2)}
+\end{eqnarray*} \vspace{2mm}
+
+\item This is consistent with a Pareto distribution with parameters $\alpha$ and $\theta=1/\beta $ (good practice to check)
+\end{itemize}
+\end{frame}
+
+\subsection{Splicing}
+
+\begin{frame}[shrink=2]
+\frametitle{Splicing}
+\begin{itemize}
+\item Join (splice) together different probability density functions to form a pdf over the support of a random
+variable \vspace{2mm}
+\[
+f_X (x)=\left\{
+\begin{array}{ll}
+\alpha_1 f_1 (x) & c_0  < x < c_1  \\
+\alpha_2 f_2 (x) & c_1  < x < c_2  \\
+\vdots & \vdots \\
+\alpha_{k}f_{k}(x) & c_{k-1} < x < c_{k}  \\%
+\end{array}%
+\right.
+\]% \vspace{2mm}
+
+$\alpha_1  + \alpha_2  \cdots + \alpha_{k} = 1$\\ \vspace{2mm}
+
+Each $f_j$ is a pdf, so that $\int_{c_{j-1}}^{c_{j}}f_{j}(x)dx =
+1$\\ \vspace{2mm}
+
+$c_{j}$'s are typically known\\ \vspace{2mm}
+
+\item \textit{Example: Life Contingencies}.
+\begin{itemize}\item It is common to use an exponential distribution in the early ages, e.g., from $x=5$ to $x=40$. The exponential has a constant hazard rate and is well suited to model mortality from
+accidents \vspace{2mm}
+
+\item Beginning at age $x=40$, one use another mortality law, e.g., Gompertz, that reflects mortality that increases with age $x$
+\end{itemize}\end{itemize}
+\end{frame}
+
+
+\section{Risk Retention -- Deductibles and Limits}
+
+\begin{frame}[shrink=2]
+\frametitle{Risk Retention Framework}
+\begin{itemize}
+\item Now consider the following framework: \vspace{2mm}
+
+\begin{itemize}
+\item The policyholder or insured suffers a loss in the amount $X$ \vspace{2mm}
+
+\item Under the insurance contract, the insurer is obligated to covered a portion of this
+amount \vspace{2mm}
+
+\item The insurer may have entered into a separate contract with a reinsurer that relieves the insurer of a portion of its
+obligations \vspace{2mm}
+\end{itemize}
+
+\item This section introduces standard mechanisms that insurers use to reduce, or mitigate, their risk, including deductibles and policy
+limits \vspace{2mm}
+
+\item Further, we examine how the distribution of the insurers obligations depends on these mechanisms
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Risk Retention Function}
+\begin{itemize}\scalefont{0.8}
+\item Recall that $X$ represents the amount of an insurable loss and use $Y$ to represent the insurer's
+obligation %\vspace{2mm}
+\item There is a known function $g(\cdot)$ that maps the amount insured to the amount retained by the insurer, that is, $Y=g(X)$ %\vspace{2mm}
+\item \textbf{Special Case 1. Deductible (d)} %\vspace{2mm}
+\begin{equation*}
+g(x) = (x-d)_+ =
+\begin{cases}
+0 & x \le d\\
+x - d & x > d .
+\end{cases}
+\end{equation*}
+The notation ``$(\cdot)_+$'' means ``take the positive part of.''
+$Y=g(X)$ as the loss in excess of the deductible $d$ \vspace{2mm}
+\item \textbf{Special Case 2. Limit (u)} %\vspace{2mm}
+\begin{equation*}
+g(x) = x \wedge u =
+\begin{cases}
+x & x \le u\\
+u & x > u .
+\end{cases}
+\end{equation*}
+The notation ``$\wedge$'' means ``take the minimum of.'' In this case, the insurance only pays up to a specified limit $u$. The random variable $Y= X \wedge u = \min(X,u)$ is the claim paid %\vspace{2mm}
+\item \textbf{Special Case 3. Coinsurance}. Define $Y = c X$. Typically, $0<c<1$, and so represents the proportion of claims retained by the insurer
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Risk Retention Function II}
+\begin{itemize}
+\item One handy way of combining the three special cases is through the expression
+\begin{equation*}
+g(x) =
+\begin{cases}
+0      & x \le d\\
+c(x-d) & d \le x < u \\
+c(u-d) & x \ge u .
+\end{cases}
+\end{equation*} \vspace{2mm}
+
+\item Think about these as parameters in a contract between a policyholder and an insurer and so represent ``modifications'' of the underlying
+contract \vspace{2mm}
+
+\item Also interpret the risk retention function as the result from a reinsurance
+contract \vspace{2mm}
+
+\begin{itemize}
+\item For example, it is common in such a contract for an insurer to retain 50\% of each risk and ``cede'' 50\% to the reinsurer
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Information Set for Deductibles}
+\begin{itemize}\scalefont{0.9}
+\item Specify what type of information, sometimes known as the ``information set,'' that is available to the
+insurer %\vspace{2mm}
+\item \textbf{Special Case 4. Policyholder Deductible}. Define:
+\begin{equation*}
+g_P(x) =
+\begin{cases}
+\text{undefined/not observed} & x \le d\\
+x - d & x > d
+\end{cases}
+\end{equation*} %\vspace{2mm}
+\item The insurance only pays amounts in excess of the deductible $d$. If the loss is less than the deductible, then the insurer does not observe the loss. The random variable $Y^P = g(X)$ is the claim that an insurer
+observes %\vspace{2mm}
+\item We have placed a ``$P$'' subscript to remind ourselves that the retained loss is on what is sometimes known as a ``per payment'' basis %\vspace{2mm}
+\item In statistical terms, this retained loss is \emph{truncated} in the sense that values of $X$ below $d$ are not
+observed %\vspace{2mm}
+ \item To distinguish this from the other case where a zero is observed for losses $X<d$, the terminology \textbf{per loss} is used.  Some sources use the notation $Y^L = (X-d)_+$ for the loss amount on a \textbf{per loss} basis
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Distributions of Retained Risks - Deductible}
+\begin{itemize}
+\item Consider two types of \textit{ordinary deductible}: \vspace{2mm}
+
+\begin{enumerate}
+\item Cost (amount of payment) per loss event
+  \begin{eqnarray*}
+Y^L=(X-d)_+&=&
+\left \{
+\begin{array}{cc}
+0 & X<d\\
+X-d & X\ge d\\
+\end{array}
+\right.\text{(a censored rv)}
+  \end{eqnarray*} \vspace{2mm}
+
+\item Cost (amount of payment) per payment event
+  \begin{eqnarray*}
+Y^P &=&
+\left \{
+\begin{array}{cc}
+undefined & X<d\\
+X-d & x\ge d\\
+\end{array}
+\right. \text{(a truncated rv)}
+  \end{eqnarray*}
+\end{enumerate}
+\end{itemize} \vspace{2mm}
+
+\textit{Example. Exponential Distribution.} Suppose that the loss
+$X$ has distribution function $F(x) = 1-\exp{(-x/1000)}$. Compute
+the distribution function and pdf for $Y^L$ and $Y^P$ with $d=250$
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Pareto Per Payment Deductible}
+\begin{itemize}
+\item Assume a deductible $d = 1,000$ \vspace{2mm}
+
+Then, the claim amount on a per payment basis is
+\begin{equation*}
+Y^{P} =
+\begin{cases}
+\text{undefined/not observed} & X < 1000\\
+1000 & X \ge 1000
+\end{cases}
+\end{equation*} \vspace{2mm}
+
+\item Identify the distribution of $Y^P$
+\end{itemize}
+\end{frame}
+
+
+\subsection{Expectations of Retained Risks}
+
+\begin{frame}[shrink=2]
+\frametitle{Limited Expected Value}
+\begin{itemize}
+\item Use a generic ``$u$'' for the upper limit. To compute the expected value of the limited loss variable $\min(X, u)$, we have
+\begin{eqnarray*}
+\mathrm{E~}\min(X, u) = \int_0^u \left(1-F(x)\right) dx =  \int_0^u S(x)dx .
+\end{eqnarray*}
+
+\textit{Pareto Policy Limit}. Recall
+\begin{equation*}
+1-F(x)=  S(x) = \Pr(X > x) = \left(\frac{\theta}{x + \theta}\right)^{\alpha}
+\end{equation*}
+with mean $\mathrm{E~}(X) = \frac{\theta}{\alpha - 1}$. Thus, the limited expected value is
+\begin{eqnarray*}
+\mathrm{E~}\min(X, u)  &=& \theta^{\alpha}\int_0^u (x + \theta)^{-\alpha} dx =\theta^{\alpha} \left.\frac{(x + \theta)^{-\alpha+1}}{-\alpha + 1}\right|_0^u\\
+&=& \theta^{\alpha}\left(\frac{\theta^{-\alpha+1} - (u+\theta)^{-\alpha+1}}{\alpha - 1}\right)\\
+&=& \frac{\theta}{\alpha-1}\left\{1 - \left(\frac{\theta}{u + \theta}\right)^{\alpha-1} \right\}.
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[shrink=2]
+\frametitle{Pareto Deductible}
+\begin{itemize}
+\item The claim amount on a ``per loss'' basis is $Y^L = (X-d)_+$ for a deductible
+$d$ \vspace{2mm}
+
+\item To calculate $\mathrm{E~} (X-d)_+$, we can use the relation, $X \wedge d + (X - d)_{+} =
+X$ \vspace{2mm}
+
+\item For the Pareto distribution, recall $\mathrm{E~}X = \frac{\theta}{\alpha - 1}$ and
+\begin{eqnarray*}
+\mathrm{E~}\min(X, d)  &=&  \frac{\theta}{\alpha-1}\left\{1 - \left(\frac{\theta}{d + \theta}\right)^{\alpha-1} \right\}.
+\end{eqnarray*} \vspace{2mm}
+
+Thus,
+\begin{eqnarray*}
+\mathrm{E~}(X-d)_+ &=& \mathrm{E~} X -
+\mathrm{E~}\min(X, d)  =  \frac{\theta}{\alpha-1} -\frac{\theta}{\alpha-1}\left\{1 - \left(\frac{\theta}{d + \theta}\right)^{\alpha-1} \right\} \\
+&=& \frac{\theta}{\alpha-1} \left\{\left(\frac{\theta}{d + \theta}\right)^{\alpha-1} \right\} .
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}%[shrink=2]
+\frametitle{Mean Residual Life}
+\begin{itemize}\scalefont{0.9}
+\item For the ``per payment'' random variable associated with the policyholder deductible case,
+\begin{equation*}
+g_P(x) =
+\begin{cases}
+\text{undefined/not observed} & x \le d\\
+x - d & x > d
+\end{cases}
+\end{equation*}
+we can calculate the expectation as
+\begin{eqnarray*}
+e_X(d) &=& e(d) = \mathrm{E~}(X - d|X > d)
+\end{eqnarray*} %\vspace{2mm}
+\item Here, $e_X(d)$ is known as the \textit{mean residual life} %\vspace{2mm}
+\item We can write this as
+\begin{eqnarray*}
+e(d) &=&  \mathrm{E~}(X - d|X > d)\\
+&=& \frac{\int_d^{\infty} (x-d) f(x)dx}{S(d)} = \frac{\mathrm{E~}(X - d)_+}{S(d)}
+\end{eqnarray*} %\vspace{2mm}
+Thus,
+\begin{eqnarray*}
+e(d) &=& \frac{\int_d^{\infty} S(x)dx}{S(d)}
+\end{eqnarray*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[shrink=2]
+\frametitle{Example} \textit{Example. Exam M Fall 2005, Exercise
+26.} For an insurance:
+
+\begin{enumerate}
+\item Losses have density function
+\begin{eqnarray*}
+f_X(x)&=& \left \{
+\begin{array}{cc}
+0.02x & 0<x<10\\
+0 & \text{elsewhere}\\
+\end{array}
+\right.
+\end{eqnarray*} \vspace{2mm}
+
+\item The insurance has an ordinary deductible of $4$ per loss \vspace{2mm}
+
+\item $Y^P$ is the claim payment per payment random variable \vspace{2mm}
+
+\end{enumerate}
+Calculate $\mathrm{E~}[Y^P]$\\
+\end{frame}
+
+
+\begin{frame}%[shrink=2]
+\frametitle{Summary of Limited Loss Variables}
+\scalefont{0.8}
+\[
+\begin{tabular}{ll}
+\hline
+\textbf{Random Variable} & \textbf{Expectation} \\ \hline
+\emph{Excess loss random variable} & $e_{X}(d)=\mathrm{E}~Y=\mathrm{E}%
+(X-d|X>d)$ \\
+$Y=X-d$ if $X>d$ & mean excess loss function \\
+left \emph{truncated} & mean residual life function \\
+& complete expectation of life \\
+& $e_{X}^{k}(d)=\mathrm{E}\left[ \left( X-d\right) ^{k}|X>d\right] $ \\
+\hline
+$\left( X-d\right) _{+}=\left\{
+\begin{array}{ll}
+0 & X<d \\
+X-d & X\geq d
+\end{array}
+\right. $ & $\mathrm{E~}\left( X-d\right) _{+}=e(d)S(d)$ \\
+left-\emph{censored} and shifted variable & $\mathrm{E~}\left(
+X-d\right) _{+}^{k}=e^{k}(d)S(d)$ \\ \hline
+$\mathrm{min}(X,d)=X\wedge d=\left\{
+\begin{array}{ll}
+X & X<d \\
+d & X\geq d
+\end{array}
+\right. $ \  & $\mathrm{E}\left( X\wedge d\right) -$ limited expected value
+\\ \emph{limited loss variable} - right \emph{censored} &
+\\ \hline
+\end{tabular}
+\]
+
+Note that $\left( X-d\right) _{+}+\left( X\wedge d\right) =X.$ \
+Thus, $ \mathrm{E~}\left( X-d\right) _{+}+\mathrm{E}\left( X\wedge
+d\right) =\mathrm{E}~X$ %\vspace{2mm}
+
+For nonnegative, continuous random variables,
+\begin{equation*}
+\mathrm{E}\left( X \wedge d\right) =\int_{0}^{d} S\left( x\right)
+dx\text{ \ \ and \ \ \ }\mathrm{E}( X-d) _{+} = \int_{d}^{\infty
+}S\left( x \right) dx
+\end{equation*}
+\end{frame}
+
+
+\subsection{Loss Elimination Ratio (LER)}
+
+\begin{frame}[shrink=2]
+\frametitle{Loss Elimination Ratio (LER)}
+\begin{itemize}
+\item Consider an ordinary deductible, cost (amount of payment) per loss event
+\begin{eqnarray*}
+LER&=&\frac{\mathrm{E~}X - (\mathrm{E~}X-\mathrm{E~}(X\wedge
+d))}{\mathrm{E~}X}
+=\frac{\mathrm{E~}(X\wedge d)}{\mathrm{E~}X}\\
+&=&\frac{\text{limited exp value}}{\text{exp value}}
+\end{eqnarray*}
+What fraction of losses have been eliminated by introducing the deductible?\\
+\end{itemize}
+
+\textit{Example.} Losses have a lognormal distribution with $\mu=6$
+and $\sigma=2$. There is a deductible of 2,000, and 10 losses are
+expected each year \vspace{2mm}
+
+Determine the loss elimination ratio
+
+\end{frame}
+
+
+\end{document}
+
+\begin{frame}[shrink=2]
+\frametitle{Instructor Notes}
+\begin{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+\textcolor{blue}{temp}
